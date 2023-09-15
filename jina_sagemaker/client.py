@@ -123,6 +123,47 @@ class Client:
 
         return self.cw_client.put_metric_alarm(**kwargs)
 
+    def create_transform_job(
+        self,
+        arn: str,
+        n_instances: int,
+        instance_type: str,
+        input_path: str,
+        output_path: str,
+        content_type: str,
+        split_type: str,
+        strategy: str,
+        role: Optional[str] = None,
+    ):
+        kwargs = {"model_package_arn": arn}
+
+        if role is None:
+            try:
+                role = sagemaker.get_execution_role()
+            except ValueError:
+                print("Using default role: 'ServiceRoleSagemaker'.")
+                role = "ServiceRoleSagemaker"
+
+        model = sagemaker.ModelPackage(
+            role=role,
+            model_data=None,
+            sagemaker_session=self._sm_session,  # makes sure the right region is used
+            **kwargs,
+        )
+
+        transformer = model.transformer(
+            instance_count=n_instances,
+            instance_type=instance_type,
+            output_path=output_path,
+            strategy=strategy,
+        )
+
+        transformer.transform(
+            data=input_path,
+            content_type=content_type,
+            split_type=split_type,
+        )
+
     def embed(
         self,
         model: str,
