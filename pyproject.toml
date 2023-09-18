@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "jina_sagemaker"
+version = "0.0.1"
+description = "Python library for the Jina endpoints in AWS Sagemaker"
+
+license = "Apache-2.0"
+
+authors = [
+    "Jina AI <hello@jina.ai>"
+]
+
+repository = "https://github.com/jina-ai/jina-sagemaker"
+homepage = "https://github.com/jina-ai/jina-sagemaker"
+
+packages = [
+    { include = "jina_sagemaker" },
+]
+
+# README file(s) are used as the package description
+readme = ["README.md", "LICENSE"]
+
+# Keywords (translated to tags on the package index)
+keywords = ["jina", "embedding", "aws", "sagemaker", "client"]
+
+exclude = ["tests/**/*"]
+
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dependencies]
+# Compatible Python versions
+python = ">=3.8,<4.0.0"
+boto3
+sagemaker
+
+# Dependency groups are supported for organizing your dependencies
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.1.2"
+pytest-cov = "^3.0"
+
+# ...and can be installed only when explicitly requested
+[tool.poetry.group.docs]
+optional = true
+[tool.poetry.group.docs.dependencies]
+Sphinx = "^5.1.1"
