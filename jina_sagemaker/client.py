@@ -3,8 +3,8 @@ from typing import Dict, List, Optional
 
 import boto3
 import sagemaker
-from sagemaker.serverless import ServerlessInferenceConfig
 from botocore.exceptions import ClientError, ParamValidationError
+from sagemaker.serverless import ServerlessInferenceConfig
 
 
 class Client:
@@ -182,8 +182,7 @@ class Client:
             Body=data,
         )
 
-        # TODO: fix
-        print(json.loads(response["Body"].read().decode())["embeddings"][0][:3])
+        return json.loads(response["Body"].read().decode())
 
     def delete_endpoint(self) -> None:
         if self._endpoint_name is None:
