@@ -73,8 +73,7 @@ fi
 
 # release the current version
 export RELEASE_VER=$(sed -n '/^__version__/p' $INIT_FILE | cut -d \' -f2)
-LAST_VER="v0.0.1"
-HEY=$(git show-ref --tags)
+LAST_VER=$(git tag -l | sort -V | tail -n1)
 printf "last version: \e[1;32m$LAST_VER\e[0m\n"
 
 if [[ $1 == "final" ]]; then
