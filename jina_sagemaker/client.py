@@ -93,7 +93,7 @@ class Client:
 
         self.connect_to_endpoint(endpoint_name)
 
-    def register_scaling(self, max_capacity, min_capacity=1):
+    def register_scalable_target(self, max_capacity, min_capacity=1):
         response = self.aas_client.register_scalable_target(
             ServiceNamespace="sagemaker",
             ResourceId=self._resource_id,
