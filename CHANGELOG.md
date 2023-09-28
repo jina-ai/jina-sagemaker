@@ -4,6 +4,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -79,4 +80,29 @@
 ### 🍹 Other Improvements
 
  - [[```cb0bf07f```](https://github.com/jina-ai/langchain-serve/commit/cb0bf07f25bafa4ec9d0d98e0ce27e6d003272c1)] __-__ __version__: the next version will be 0.0.5 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-6></a>
+## Release Note (`0.0.6`)
+
+> Release time: 2023-09-28 06:24:18
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```0ae75096```](https://github.com/jina-ai/langchain-serve/commit/0ae75096bea84dc0560f69ea5663080a319893f9)] __-__ embed (*Zac Li*)
+ - [[```13bcb9a8```](https://github.com/jina-ai/langchain-serve/commit/13bcb9a8c86bc5fc898bf08d24f9358e1997d720)] __-__ use new model package (*Zac Li*)
+
+### 📗 Documentation
+
+ - [[```9a639ef7```](https://github.com/jina-ai/langchain-serve/commit/9a639ef7b82168474cfada59053989f6d068d2e6)] __-__ notebook (*Zac Li*)
+
+### 🍹 Other Improvements
+
+ - [[```415949ee```](https://github.com/jina-ai/langchain-serve/commit/415949eea403d56fb0a19c19f8d3e26885c88757)] __-__ precommit (*Zac Li*)
+ - [[```e2faac4a```](https://github.com/jina-ai/langchain-serve/commit/e2faac4a9d2fb4077f127263b271071a89b18d36)] __-__ __version__: the next version will be 0.0.6 (*Jina Dev Bot*)
 
