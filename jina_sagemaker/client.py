@@ -166,15 +166,14 @@ class Client:
 
     def embed(
         self,
-        model: str,
-        texts: List[str],
+        text: str,
     ):
         if self._endpoint_name is None:
             raise Exception(
                 "No endpoint connected. " "Run connect_to_endpoint() first."
             )
 
-        data = json.dumps({"model": model, "texts": texts})
+        data = json.dumps({"data": {"text": text}})
 
         response = self.sm_runtime_client.invoke_endpoint(
             EndpointName=self._endpoint_name,
