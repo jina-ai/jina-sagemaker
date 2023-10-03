@@ -1,5 +1,5 @@
 import json
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 import boto3
 import sagemaker
@@ -164,16 +164,16 @@ class Client:
             split_type=split_type,
         )
 
-    def embed(
-        self,
-        text: str,
-    ):
+    def embed(self, texts: Union[str, List[str]]):
         if self._endpoint_name is None:
             raise Exception(
                 "No endpoint connected. " "Run connect_to_endpoint() first."
             )
 
-        data = json.dumps({"data": {"text": text}})
+        if isinstance(texts, str):
+            data = json.dumps({"data": {"text": texts}})
+        else:
+            data = json.dumps({"data": [{"text": text} for text in texts]})
 
         response = self.sm_runtime_client.invoke_endpoint(
             EndpointName=self._endpoint_name,
@@ -181,21 +181,22 @@ class Client:
             Body=data,
         )
 
-        return json.loads(response["Body"].read().decode())
+        resp = json.loads(response["Body"].read().decode())
+        return resp["data"]
 
     def delete_endpoint(self) -> None:
         if self._endpoint_name is None:
             raise Exception("No endpoint connected.")
         try:
             self.sm_client.delete_endpoint(EndpointName=self._endpoint_name)
-        except:
+        except ClientError:
             print("Endpoint not found, skipping deletion.")
 
         try:
             self.sm_client.delete_endpoint_config(
                 EndpointConfigName=self._endpoint_name
             )
-        except:
+        except ClientError:
             print("Endpoint config not found, skipping deletion.")
 
     def close(self) -> None:
