@@ -158,7 +158,7 @@ class Client:
 
         download_output = False
         # if output path is a local path, change to default s3 bucket,
-        # add job name and session name
+        # add job name and random uuid
         if not output_path.startswith("s3://"):
             output_path = os.path.join(
                 "s3://",
