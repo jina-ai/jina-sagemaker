@@ -149,25 +149,26 @@ class Client:
             model_package_arn=arn,
         )
 
+        uid = uuid.uuid4().hex
         # if input path is a local path, upload to default s3 bucket
         if not input_path.startswith("s3://"):
             if os.path.exists(input_path):
                 input_path = self._sm_session.upload_data(
-                    path=input_path, key_prefix="input"
+                    path=input_path, key_prefix=f"input/{uid}"
                 )
 
-        download_output = False
+        download_output_path = None
         # if output path is a local path, change to default s3 bucket,
         # add job name and random uuid
         if not output_path.startswith("s3://"):
+            download_output_path = output_path
             output_path = os.path.join(
                 "s3://",
                 self._sm_session.default_bucket(),
                 "output",
                 model.name,
-                uuid.uuid4().hex,
+                uid,
             )
-            download_output = True
 
         transformer = model.transformer(
             instance_count=n_instances,
@@ -183,13 +184,13 @@ class Client:
             wait=wait,
         )
 
-        if download_output:
+        if download_output_path is not None:
             self.download_s3_folder(
                 bucket_name=self._sm_session.default_bucket(),
                 s3_folder=os.path.join(
                     output_path, transformer.latest_transform_job.job_name
                 ),
-                local_dir=output_path,
+                local_dir=download_output_path,
             )
 
     def embed(self, texts: Union[str, List[str]]):
