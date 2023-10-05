@@ -1,4 +1,6 @@
 import json
+import os
+import uuid
 from typing import Dict, List, Optional, Union
 
 import boto3
@@ -35,6 +37,13 @@ class Client:
             self._endpoint_name, self._variant_name
         )
 
+    def get_role(self):
+        try:
+            return sagemaker.get_execution_role()
+        except ValueError:
+            print("Using default role: 'ServiceRoleSagemaker'.")
+            return "ServiceRoleSagemaker"
+
     def create_endpoint(
         self,
         arn: str,
@@ -57,11 +66,7 @@ class Client:
         kwargs = {"model_package_arn": arn}
 
         if role is None:
-            try:
-                role = sagemaker.get_execution_role()
-            except ValueError:
-                print("Using default role: 'ServiceRoleSagemaker'.")
-                role = "ServiceRoleSagemaker"
+            role = self.get_role()
 
         model = sagemaker.ModelPackage(
             role=role,
@@ -130,39 +135,62 @@ class Client:
         instance_type: str,
         input_path: str,
         output_path: str,
-        content_type: str,
-        split_type: str,
-        strategy: str,
         role: Optional[str] = None,
+        wait: bool = True,
     ):
-        kwargs = {"model_package_arn": arn}
-
         if role is None:
-            try:
-                role = sagemaker.get_execution_role()
-            except ValueError:
-                print("Using default role: 'ServiceRoleSagemaker'.")
-                role = "ServiceRoleSagemaker"
+            role = self.get_role()
 
         model = sagemaker.ModelPackage(
+            name=arn.split("/")[-1],
             role=role,
             model_data=None,
             sagemaker_session=self._sm_session,  # makes sure the right region is used
-            **kwargs,
+            model_package_arn=arn,
         )
+
+        # if input path is a local path, upload to default s3 bucket
+        if not input_path.startswith("s3://"):
+            if os.path.exists(input_path):
+                input_path = self._sm_session.upload_data(
+                    path=input_path, key_prefix="input"
+                )
+
+        download_output = False
+        # if output path is a local path, change to default s3 bucket,
+        # add job name and session name
+        if not output_path.startswith("s3://"):
+            output_path = os.path.join(
+                "s3://",
+                self._sm_session.default_bucket(),
+                "output",
+                model.name,
+                uuid.uuid4().hex,
+            )
+            download_output = True
 
         transformer = model.transformer(
             instance_count=n_instances,
             instance_type=instance_type,
             output_path=output_path,
-            strategy=strategy,
+            strategy='MultiRecord',
         )
 
         transformer.transform(
             data=input_path,
-            content_type=content_type,
-            split_type=split_type,
+            content_type='text/csv',
+            split_type='Line',
+            wait=wait,
         )
+
+        if download_output:
+            self.download_s3_folder(
+                bucket_name=self._sm_session.default_bucket(),
+                s3_folder=os.path.join(
+                    output_path, transformer.latest_transform_job.job_name
+                ),
+                local_dir=output_path,
+            )
 
     def embed(self, texts: Union[str, List[str]]):
         if self._endpoint_name is None:
@@ -208,3 +236,26 @@ class Client:
                 "SageMaker client could not be closed. This might be because you are using an old version of SageMaker."
             )
             raise
+
+    @staticmethod
+    def download_s3_folder(bucket_name: str, s3_folder: str, local_dir: str) -> None:
+        """
+        Download the contents of a folder directory
+        Args:
+            bucket_name: the name of the s3 bucket
+            s3_folder: the folder path in the s3 bucket
+            local_dir: a relative or absolute directory path in the local file system
+        """
+        s3 = boto3.resource("s3")
+        bucket = s3.Bucket(bucket_name)
+        for obj in bucket.objects.filter(Prefix=s3_folder):
+            target = (
+                obj.key
+                if local_dir is None
+                else os.path.join(local_dir, os.path.relpath(obj.key, s3_folder))
+            )
+            if not os.path.exists(os.path.dirname(target)):
+                os.makedirs(os.path.dirname(target))
+            if obj.key[-1] == "/":
+                continue
+            bucket.download_file(obj.key, target)
