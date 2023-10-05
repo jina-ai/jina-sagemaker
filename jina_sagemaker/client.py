@@ -186,12 +186,10 @@ class Client:
 
         if download_output_path is not None:
             self.download_s3_folder(
-                bucket_name=self._sm_session.default_bucket(),
-                s3_folder=os.path.join(
-                    output_path, transformer.latest_transform_job.job_name
-                ),
+                s3_path=output_path,
                 local_dir=download_output_path,
             )
+            print(f'Output downloaded to {download_output_path}.')
 
     def embed(self, texts: Union[str, List[str]]):
         if self._endpoint_name is None:
@@ -239,14 +237,14 @@ class Client:
             raise
 
     @staticmethod
-    def download_s3_folder(bucket_name: str, s3_folder: str, local_dir: str) -> None:
+    def download_s3_folder(s3_path: str, local_dir: str = None):
         """
         Download the contents of a folder directory
         Args:
-            bucket_name: the name of the s3 bucket
-            s3_folder: the folder path in the s3 bucket
+            s3_path: the s3 path
             local_dir: a relative or absolute directory path in the local file system
         """
+        bucket_name, s3_folder = s3_path.replace("s3://", "").split("/", 1)
         s3 = boto3.resource("s3")
         bucket = s3.Bucket(bucket_name)
         for obj in bucket.objects.filter(Prefix=s3_folder):
