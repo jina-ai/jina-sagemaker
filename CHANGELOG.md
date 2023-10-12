@@ -6,6 +6,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -130,4 +131,35 @@
 ### 🍹 Other Improvements
 
  - [[```deda81de```](https://github.com/jina-ai/langchain-serve/commit/deda81de05ae42fb024a5d4e58c4d50db3ff5fd8)] __-__ __version__: the next version will be 0.0.7 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-9></a>
+## Release Note (`0.0.9`)
+
+> Release time: 2023-10-12 10:10:51
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```c0255e6c```](https://github.com/jina-ai/langchain-serve/commit/c0255e6ceb8afff829e0eebf8bc1bd06885d17dc)] __-__ black (*Zac Li*)
+ - [[```cef11cc6```](https://github.com/jina-ai/langchain-serve/commit/cef11cc66df2306361b0ae8b27f2a6fdfe9de6b2)] __-__ helper module (*Zac Li*)
+ - [[```c2ee158e```](https://github.com/jina-ai/langchain-serve/commit/c2ee158e497e864646e7888a3da8cee0eb373d7f)] __-__ batch transform can take csv without ids (*Zac Li*)
+
+### 📗 Documentation
+
+ - [[```6554bc85```](https://github.com/jina-ai/langchain-serve/commit/6554bc8536bd3a6ee97acc9bc3d8b0c8bf928c95)] __-__ notebook update (*Zac Li*)
+ - [[```3c0dd5d6```](https://github.com/jina-ai/langchain-serve/commit/3c0dd5d6005bdfc03bde6c98ac49c3126b8102ed)] __-__ update (*Zac Li*)
+ - [[```897adb92```](https://github.com/jina-ai/langchain-serve/commit/897adb9209b649d433afaa5da77f6488f64a2188)] __-__ remove sls (*Zac Li*)
+ - [[```e78b7bcb```](https://github.com/jina-ai/langchain-serve/commit/e78b7bcb32c92cbe0b20e22649459331b3c6560c)] __-__ notebook for autoscaled inference (*Zac Li*)
+
+### 🍹 Other Improvements
+
+ - [[```5abee392```](https://github.com/jina-ai/langchain-serve/commit/5abee3929b74b3db4abd91e61a8d524265a895a1)] __-__ fix version (*Zac Li*)
+ - [[```1fbc6be8```](https://github.com/jina-ai/langchain-serve/commit/1fbc6be850452770551e07bca6ca42fcaac857bf)] __-__ fix build (*Zac Li*)
+ - [[```fd42d8df```](https://github.com/jina-ai/langchain-serve/commit/fd42d8df39ece0742a77530c34d80dbaa4b30089)] __-__ ci (*Zac Li*)
+ - [[```0921421c```](https://github.com/jina-ai/langchain-serve/commit/0921421c4d17ae886c6818a6c0951fe94a3905e2)] __-__ __version__: the next version will be 0.0.8 (*Jina Dev Bot*)
 
