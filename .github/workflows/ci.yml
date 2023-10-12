@@ -41,7 +41,7 @@ jobs:
       - name: check black
         run: |
           pip install black
-          black --check .
+          black -S --check .
 
   tests:
     runs-on: ubuntu-latest
