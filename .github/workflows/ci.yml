@@ -34,18 +34,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.5.0
-        with:
-          fetch-depth: 0
-      - name: Set up Python 3.9
+      - name: Set up Python 3.19
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
-      - id: file_changes
-        uses: Ana06/get-changed-files@v1.2
+          python-version: "3.10"
       - name: check black
-        run: ./scripts/black.sh
-        env:
-          CHANGED_FILES: ${{ steps.file_changes.outputs.added_modified }}
+        run: |
+          pip install black
+          black --check .
 
   tests:
     runs-on: ubuntu-latest
@@ -61,4 +57,6 @@ jobs:
           pip install .[test]
       - name: Run tests with pytest
         run: |
+          cd tests
+          export PYTHONPATH=.:$PYTHONPATH
           pytest -v -s -x
