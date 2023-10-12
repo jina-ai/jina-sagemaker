@@ -1,16 +1,25 @@
 import json
+import logging
 import os
 import uuid
-from typing import Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Union
 
 import boto3
-import sagemaker
 from botocore.exceptions import ClientError, ParamValidationError
-from sagemaker.serverless import ServerlessInferenceConfig
+
+from .helper import prefix_csv_with_ids
+
+if TYPE_CHECKING:
+    from sagemaker.serverless import ServerlessInferenceConfig
 
 
 class Client:
-    def __init__(self, region_name: Optional[str] = None):
+    def __init__(self, region_name: Optional[str] = None, verbose=False):
+        if not verbose:
+            logging.getLogger("sagemaker.config").setLevel(logging.WARNING)
+
+        import sagemaker
+
         self.sm_runtime_client = boto3.client(
             "sagemaker-runtime", region_name=region_name
         )
@@ -38,6 +47,8 @@ class Client:
         )
 
     def get_role(self):
+        import sagemaker
+
         try:
             return sagemaker.get_execution_role()
         except ValueError:
@@ -52,8 +63,10 @@ class Client:
         n_instances: int = 1,
         recreate: bool = False,
         role: Optional[str] = None,
-        sls_config: Optional[ServerlessInferenceConfig] = None,
+        sls_config: Optional["ServerlessInferenceConfig"] = None,
     ) -> None:
+        import sagemaker
+
         if self._does_endpoint_exist(endpoint_name):
             if recreate:
                 self.connect_to_endpoint(endpoint_name)
@@ -137,7 +150,10 @@ class Client:
         output_path: str,
         role: Optional[str] = None,
         wait: bool = True,
+        logs: bool = True,
     ):
+        import sagemaker
+
         if role is None:
             role = self.get_role()
 
@@ -153,6 +169,7 @@ class Client:
         # if input path is a local path, upload to default s3 bucket
         if not input_path.startswith("s3://"):
             if os.path.exists(input_path):
+                prefix_csv_with_ids(input_path=input_path, output_path=input_path)
                 input_path = self._sm_session.upload_data(
                     path=input_path, key_prefix=f"input/{uid}"
                 )
@@ -174,14 +191,15 @@ class Client:
             instance_count=n_instances,
             instance_type=instance_type,
             output_path=output_path,
-            strategy='MultiRecord',
+            strategy="MultiRecord",
         )
 
         transformer.transform(
             data=input_path,
-            content_type='text/csv',
-            split_type='Line',
+            content_type="text/csv",
+            split_type="Line",
             wait=wait,
+            logs=logs,
         )
 
         if download_output_path is not None:
@@ -189,7 +207,7 @@ class Client:
                 s3_path=output_path,
                 local_dir=download_output_path,
             )
-            print(f'Output downloaded to {download_output_path}.')
+            print(f"Output downloaded to {download_output_path}.")
 
     def embed(self, texts: Union[str, List[str]]):
         if self._endpoint_name is None:
