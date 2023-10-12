@@ -57,6 +57,4 @@ jobs:
           pip install .[test]
       - name: Run tests with pytest
         run: |
-          cd tests
-          export PYTHONPATH=.:$PYTHONPATH
           pytest -v -s -x
