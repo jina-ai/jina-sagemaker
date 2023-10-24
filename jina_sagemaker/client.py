@@ -209,7 +209,7 @@ class Client:
             )
             print(f"Output downloaded to {download_output_path}.")
 
-    def embed(self, texts: Union[str, List[str]]):
+    def _invoke_endpoint(self, texts: Union[str, List[str]]):
         if self._endpoint_name is None:
             raise Exception(
                 "No endpoint connected. " "Run connect_to_endpoint() first."
@@ -220,12 +220,14 @@ class Client:
         else:
             data = json.dumps({"data": [{"text": text} for text in texts]})
 
-        response = self.sm_runtime_client.invoke_endpoint(
+        return self.sm_runtime_client.invoke_endpoint(
             EndpointName=self._endpoint_name,
             ContentType="application/json",
             Body=data,
         )
 
+    def embed(self, texts: Union[str, List[str]]):
+        response = self._invoke_endpoint(texts)
         resp = json.loads(response["Body"].read().decode())
         return resp["data"]
 
