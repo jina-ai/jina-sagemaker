@@ -7,6 +7,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -162,4 +163,25 @@
  - [[```1fbc6be8```](https://github.com/jina-ai/langchain-serve/commit/1fbc6be850452770551e07bca6ca42fcaac857bf)] __-__ fix build (*Zac Li*)
  - [[```fd42d8df```](https://github.com/jina-ai/langchain-serve/commit/fd42d8df39ece0742a77530c34d80dbaa4b30089)] __-__ ci (*Zac Li*)
  - [[```0921421c```](https://github.com/jina-ai/langchain-serve/commit/0921421c4d17ae886c6818a6c0951fe94a3905e2)] __-__ __version__: the next version will be 0.0.8 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-10></a>
+## Release Note (`0.0.10`)
+
+> Release time: 2023-10-24 05:49:47
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Deepankar Mahapatro,  Zac Li,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```23feb3a3```](https://github.com/jina-ai/langchain-serve/commit/23feb3a37f233f09bddf09a9b2bbc0b3a6a9971c)] __-__ helper invoke method (*Deepankar Mahapatro*)
+ - [[```6f152177```](https://github.com/jina-ai/langchain-serve/commit/6f1521775656e6ce17872550cabeda80bba7c035)] __-__ update v2 (*Zac Li*)
+
+### 🍹 Other Improvements
+
+ - [[```7df3406e```](https://github.com/jina-ai/langchain-serve/commit/7df3406ef68e4dc5b486ca9d683ef19f0fb8de7e)] __-__ update notebook (*Deepankar Mahapatro*)
+ - [[```84995f79```](https://github.com/jina-ai/langchain-serve/commit/84995f79c6927569de0454374e3cc617cb726255)] __-__ __version__: the next version will be 0.0.10 (*Jina Dev Bot*)
 
