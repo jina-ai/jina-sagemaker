@@ -46,7 +46,7 @@ class Client:
         self,
         arn: str,
         endpoint_name: str,
-        instance_type: str = "",
+        instance_type: str,
         n_instances: int = 1,
         recreate: bool = False,
         role: Optional[str] = get_role(),
@@ -218,6 +218,7 @@ class Client:
             self._sm_client.close()
         except AttributeError:
             print(
-                "SageMaker client could not be closed. This might be because you are using an old version of SageMaker."
+                "SageMaker client could not be closed. "
+                "This might be because you are using an old version of SageMaker."
             )
             raise
