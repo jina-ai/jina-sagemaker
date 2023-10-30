@@ -1,4 +1,11 @@
-# Jina Python SDK (AWS SageMaker)
+# `jina-sagemaker`: Jina Embedding Models on AWS SageMaker
+
+<p align=center>
+<a href="https://pypi.org/project/jina-sagemaker/"><img alt="PyPI" src="https://img.shields.io/pypi/v/jina-sagemaker?label=Release&style=flat-square"></a>
+<a href="https://discord.jina.ai"><img src="https://img.shields.io/discord/1106542220112302130?logo=discord&logoColor=white&style=flat-square"></a>
+<a href="https://pypistats.org/packages/jina-sagemaker"><img alt="PyPI - Downloads from official pypistats" src="https://img.shields.io/pypi/dm/jina-sagemaker?style=flat-square"></a>
+</p>
+
 
 This package offers streamlined tools for interacting with [Jina Embedding Models through the AWS SageMaker Marketplace](), all within a Python environment.
 
