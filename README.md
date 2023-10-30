@@ -23,6 +23,12 @@ Install from source:
 python setup.py install
 ```
 
-## Quick Start
+## Usage
 
-Before you can take advantage of this library, it's essential to configure your AWS credentials. You can accomplish this by running the `aws configure` command. Once your credentials are in place, the [Jupyter notebook](https://github.com/jina-ai/jina-sagemaker/blob/main/notebooks/Inference%20with%20Jina%20Embedding%20Model.ipynb) will guide you through the initial setup and usage.
+Please configure your AWS credentials before using this package. You can do this by following the instructions [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html).
+
+Following notebooks give an overview of how to use the package for inference and batch transform jobs:
+
+- [Real-time Inference](notebooks/Real-time%20inference.ipynb)
+- [Batch Transform](notebooks/Batch%20transform.ipynb)
+
