@@ -122,10 +122,13 @@ class Client:
         instance_type: str,
         input_path: str,
         output_path: str,
-        role: Optional[str] = get_role(),
+        role: Optional[str] = None,
         wait: bool = True,
         logs: bool = True,
     ):
+        if role is None:
+            role = get_role()
+
         model = sagemaker.ModelPackage(
             name=arn.split("/")[-1],
             role=role,
