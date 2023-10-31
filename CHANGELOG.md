@@ -9,6 +9,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -205,4 +206,23 @@
 
  - [[```248354ab```](https://github.com/jina-ai/langchain-serve/commit/248354ab1aad2b4cd6957f8c8a57fef3ab6a9ec6)] __-__ update readme (*Deepankar Mahapatro*)
  - [[```64a41355```](https://github.com/jina-ai/langchain-serve/commit/64a41355e3b0d392f63e06c431db45c8e9dae38a)] __-__ __version__: the next version will be 0.0.11 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-12></a>
+## Release Note (`0.0.12`)
+
+> Release time: 2023-10-31 07:38:28
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```6debada9```](https://github.com/jina-ai/langchain-serve/commit/6debada9de8bdc9adb8a695f112f0f7c4e140ed6)] __-__ side effect in aws batch needs to be fixed (*Zac Li*)
+
+### 🍹 Other Improvements
+
+ - [[```3ac80e4a```](https://github.com/jina-ai/langchain-serve/commit/3ac80e4a0f0119901b1af9cb177fcd93580ce3c4)] __-__ __version__: the next version will be 0.0.12 (*Jina Dev Bot*)
 
