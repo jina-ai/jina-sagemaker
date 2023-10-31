@@ -49,8 +49,11 @@ class Client:
         instance_type: str,
         n_instances: int = 1,
         recreate: bool = False,
-        role: Optional[str] = get_role(),
+        role: Optional[str] = None,
     ) -> None:
+        if role is None:
+            role = get_role()
+
         if self._does_endpoint_exist(endpoint_name):
             if recreate:
                 self.connect_to_endpoint(endpoint_name)
