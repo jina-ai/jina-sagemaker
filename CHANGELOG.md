@@ -11,6 +11,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -245,4 +246,23 @@
 ### 🍹 Other Improvements
 
  - [[```bf658481```](https://github.com/jina-ai/langchain-serve/commit/bf658481ec6db347627cf06f1eb699a7eb22456e)] __-__ __version__: the next version will be 0.0.13 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-14></a>
+## Release Note (`0.0.14`)
+
+> Release time: 2023-11-01 03:52:37
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```6dbd13ca```](https://github.com/jina-ai/langchain-serve/commit/6dbd13ca8b611f9c5c09d263e11cc42cc7714d1c)] __-__ allow aws client args in client init (*Zac Li*)
+
+### 🍹 Other Improvements
+
+ - [[```c825b929```](https://github.com/jina-ai/langchain-serve/commit/c825b92974900851f3406159175807e52e8b5ab6)] __-__ __version__: the next version will be 0.0.14 (*Jina Dev Bot*)
 
