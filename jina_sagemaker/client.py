@@ -12,19 +12,24 @@ from .helper import download_s3_folder, get_role, prefix_csv_with_ids
 
 
 class Client:
-    def __init__(self, region_name: Optional[str] = None, verbose=False):
+    def __init__(
+        self,
+        region_name: Optional[str] = None,
+        verbose=False,
+        client_args: Optional[dict] = None,
+    ):
         if not verbose:
             logging.getLogger("sagemaker.config").setLevel(logging.WARNING)
 
-        self._sm_runtime_client = boto3.client(
-            "sagemaker-runtime", region_name=region_name
-        )
-        self._sm_client = boto3.client("sagemaker", region_name=region_name)
+        client_args = client_args or {}
+        if region_name:
+            client_args["region_name"] = region_name
+
+        self._sm_runtime_client = boto3.client("sagemaker-runtime", **client_args)
+        self._sm_client = boto3.client("sagemaker", **client_args)
         self._sm_session = sagemaker.Session(sagemaker_client=self._sm_client)
-        self._aas_client = boto3.client(
-            "application-autoscaling", region_name=region_name
-        )
-        self._cw_client = boto3.client("cloudwatch", region_name=region_name)
+        self._aas_client = boto3.client("application-autoscaling", **client_args)
+        self._cw_client = boto3.client("cloudwatch", **client_args)
 
     def _does_endpoint_exist(self, endpoint_name: str) -> bool:
         try:
