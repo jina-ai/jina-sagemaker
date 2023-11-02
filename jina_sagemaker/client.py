@@ -133,12 +133,11 @@ class Client:
 
         uid = uuid.uuid4().hex
         # if input path is a local path, upload to default s3 bucket
-        if not input_path.startswith("s3://"):
-            if os.path.exists(input_path):
-                prefix_csv_with_ids(input_path=input_path, output_path=input_path)
-                input_path = self._sm_session.upload_data(
-                    path=input_path, key_prefix=f"input/{uid}"
-                )
+        if not input_path.startswith("s3://") and os.path.exists(input_path):
+            csv_path_with_ids = prefix_csv_with_ids(input_path=input_path)
+            input_path = self._sm_session.upload_data(
+                path=csv_path_with_ids, key_prefix=f"input/{uid}"
+            )
 
         download_output_path = None
         # if output path is a local path, change to default s3 bucket,
