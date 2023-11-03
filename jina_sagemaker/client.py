@@ -135,9 +135,10 @@ class Client:
         # if input path is a local path, upload to default s3 bucket
         if not input_path.startswith("s3://") and os.path.exists(input_path):
             csv_path_with_ids = prefix_csv_with_ids(input_path=input_path)
-            input_path = self._sm_session.upload_data(
+            s3_input_path = self._sm_session.upload_data(
                 path=csv_path_with_ids, key_prefix=f"input/{uid}"
             )
+            print(f'Input file uploaded to {s3_input_path}.')
 
         download_output_path = None
         # if output path is a local path, change to default s3 bucket,
@@ -160,7 +161,7 @@ class Client:
         )
 
         transformer.transform(
-            data=input_path,
+            data=s3_input_path,
             content_type="text/csv",
             split_type="Line",
             wait=wait,
