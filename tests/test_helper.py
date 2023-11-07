@@ -1,22 +1,26 @@
 import os
 import tempfile
 
+import pytest
+
 from jina_sagemaker.helper import prefix_csv_with_ids
 
 SAMPLE_CSV_CONTENT = """How is the weather today?
 When are you open?"""
 
 
-def test_prefix_csv_with_ids():
-    with tempfile.NamedTemporaryFile(delete=False) as f:
-        input_file_name = f.name
-        f.write(SAMPLE_CSV_CONTENT.encode("utf-8"))
+SAMPLE_CSV_CONTENT_WITH_IDS = """a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6,How is the weather today?
+a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6,When are you open?"""
 
-    with tempfile.NamedTemporaryFile(delete=False) as f:
-        output_file_name = f.name
+
+@pytest.mark.parametrize("content", [SAMPLE_CSV_CONTENT, SAMPLE_CSV_CONTENT_WITH_IDS])
+def test_prefix_csv_with_ids(content):
+    with tempfile.NamedTemporaryFile(mode="wb", delete=False, suffix=".csv") as f:
+        input_file_name = f.name
+        f.write(content.encode("utf-8"))
 
     try:
-        prefix_csv_with_ids(input_file_name, output_file_name)
+        output_file_name = prefix_csv_with_ids(input_file_name)
 
         # Check the output
         with open(output_file_name, "r") as f:

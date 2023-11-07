@@ -1,27 +1,47 @@
+import csv
 import os
-import tempfile
 import uuid
 
 import boto3
-import sagemaker
 
 
-def prefix_csv_with_ids(input_path, output_path):
-    """Prefix each line in the CSV with a random ID."""
+def prefix_csv_with_ids(input_path: str) -> str:
+    def is_uuid(val):
+        try:
+            uuid.UUID(str(val))
+            return True
+        except ValueError:
+            return False
 
-    with open(input_path, "r") as csv_file, tempfile.NamedTemporaryFile(
-        mode="w+", delete=False
-    ) as temp_file:
-        for line in csv_file:
-            text = line.strip()
-            uid = str(uuid.uuid4()).replace("-", "")[:32]
-            temp_file.write(f"{uid},{text}\n")
+    # output_path should be oldfilename_with_ids.csv
+    output_path = input_path.replace(".csv", "_with_ids.csv")
 
-    # Replace the original file with the temporary one
-    os.replace(temp_file.name, output_path)
+    with open(input_path, mode="r", encoding="utf-8") as infile, open(
+        output_path, mode="w", newline="", encoding="utf-8"
+    ) as outfile:
+        reader = csv.reader(infile, quoting=csv.QUOTE_NONE, escapechar="\\")
+        writer = csv.writer(outfile, quoting=csv.QUOTE_NONE, escapechar="\\")
+
+        first_row = next(reader, None)
+        if first_row is None:
+            return
+
+        has_uuid = is_uuid(first_row[0]) if first_row else False
+
+        infile.seek(0)
+        for row in reader:
+            if has_uuid:
+                writer.writerow(row)
+            else:
+                writer.writerow([uuid.uuid4().hex] + row)
+
+    print(f"Input file with ids created at {output_path}.")
+    return output_path
 
 
 def get_role():
+    import sagemaker
+
     try:
         return sagemaker.get_execution_role()
     except ValueError:
