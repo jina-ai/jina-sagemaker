@@ -3,7 +3,6 @@ import os
 import uuid
 
 import boto3
-import sagemaker
 
 
 def prefix_csv_with_ids(input_path: str) -> str:
@@ -17,11 +16,11 @@ def prefix_csv_with_ids(input_path: str) -> str:
     # output_path should be oldfilename_with_ids.csv
     output_path = input_path.replace(".csv", "_with_ids.csv")
 
-    with open(input_path, mode='r', encoding='utf-8') as infile, open(
-        output_path, mode='w', newline='', encoding='utf-8'
+    with open(input_path, mode="r", encoding="utf-8") as infile, open(
+        output_path, mode="w", newline="", encoding="utf-8"
     ) as outfile:
-        reader = csv.reader(infile, quoting=csv.QUOTE_NONE, escapechar='\\')
-        writer = csv.writer(outfile, quoting=csv.QUOTE_NONE, escapechar='\\')
+        reader = csv.reader(infile, quoting=csv.QUOTE_NONE, escapechar="\\")
+        writer = csv.writer(outfile, quoting=csv.QUOTE_NONE, escapechar="\\")
 
         first_row = next(reader, None)
         if first_row is None:
@@ -36,10 +35,13 @@ def prefix_csv_with_ids(input_path: str) -> str:
             else:
                 writer.writerow([uuid.uuid4().hex] + row)
 
+    print(f"Input file with ids created at {output_path}.")
     return output_path
 
 
 def get_role():
+    import sagemaker
+
     try:
         return sagemaker.get_execution_role()
     except ValueError:

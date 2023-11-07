@@ -5,7 +5,6 @@ import uuid
 from typing import Dict, List, Optional, Union
 
 import boto3
-import sagemaker
 from botocore.exceptions import ClientError, ParamValidationError
 
 from .helper import download_s3_folder, get_role, prefix_csv_with_ids
@@ -13,6 +12,8 @@ from .helper import download_s3_folder, get_role, prefix_csv_with_ids
 
 class Client:
     def __init__(self, region_name: Optional[str] = None, verbose=False):
+        import sagemaker
+
         if not verbose:
             logging.getLogger("sagemaker.config").setLevel(logging.WARNING)
 
@@ -51,6 +52,8 @@ class Client:
         recreate: bool = False,
         role: Optional[str] = get_role(),
     ) -> None:
+        import sagemaker
+
         if self._does_endpoint_exist(endpoint_name):
             if recreate:
                 self.connect_to_endpoint(endpoint_name)
@@ -123,6 +126,8 @@ class Client:
         wait: bool = True,
         logs: bool = True,
     ):
+        import sagemaker
+
         model = sagemaker.ModelPackage(
             name=arn.split("/")[-1],
             role=role,
@@ -138,7 +143,7 @@ class Client:
             s3_input_path = self._sm_session.upload_data(
                 path=csv_path_with_ids, key_prefix=f"input/{uid}"
             )
-            print(f'Input file uploaded to {s3_input_path}.')
+            print(f"Input file uploaded to {s3_input_path}.")
 
         download_output_path = None
         # if output path is a local path, change to default s3 bucket,
