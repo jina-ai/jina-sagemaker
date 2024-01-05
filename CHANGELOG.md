@@ -12,6 +12,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -265,4 +266,38 @@
 ### 🍹 Other Improvements
 
  - [[```c825b929```](https://github.com/jina-ai/langchain-serve/commit/c825b92974900851f3406159175807e52e8b5ab6)] __-__ __version__: the next version will be 0.0.14 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-15></a>
+## Release Note (`0.0.15`)
+
+> Release time: 2024-01-05 03:56:37
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  Deepankar Mahapatro,  Saahil Ognawala,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```b5ca924b```](https://github.com/jina-ai/langchain-serve/commit/b5ca924ba2ac4463fc70b1eaf7ee1b429a26cfee)] __-__ remove params that cause issue (*Zac Li*)
+ - [[```2ff59a88```](https://github.com/jina-ai/langchain-serve/commit/2ff59a8837759827ffc9269d5a7554971334931c)] __-__ model package map (*Deepankar Mahapatro*)
+ - [[```0dcc34d3```](https://github.com/jina-ai/langchain-serve/commit/0dcc34d3abd494f74f1fbf7354b5fd125605db84)] __-__ cleanup batch notebook (*Deepankar Mahapatro*)
+ - [[```089753f8```](https://github.com/jina-ai/langchain-serve/commit/089753f8cabf2d1b460ee848473d0491cd2a85ff)] __-__ cleanup realtime notebook (*Deepankar Mahapatro*)
+ - [[```692d39df```](https://github.com/jina-ai/langchain-serve/commit/692d39dfcc4cb41a985ad69fc968ace095a531f1)] __-__ change id file path (*Deepankar Mahapatro*)
+ - [[```c881a73c```](https://github.com/jina-ai/langchain-serve/commit/c881a73c30c461a9105dd65a4b8562006d1641dd)] __-__ added examples, notebook cleanup (*Deepankar Mahapatro*)
+
+### 🧼 Code Refactoring
+
+ - [[```ab6950ab```](https://github.com/jina-ai/langchain-serve/commit/ab6950abd0c9a029f1d5b0e83eeaef6636171f36)] __-__ clearer phrasing for skipping subscription step (*Saahil Ognawala*)
+
+### 📗 Documentation
+
+ - [[```fc29bb3c```](https://github.com/jina-ai/langchain-serve/commit/fc29bb3c4e837b43907629d32e57c80376604c6b)] __-__ batch transform notebook update (*Zac Li*)
+ - [[```483478a4```](https://github.com/jina-ai/langchain-serve/commit/483478a4f164a7289ebca12d275286774fcfa508)] __-__ expanding region support (*Zac Li*)
+ - [[```64578fd9```](https://github.com/jina-ai/langchain-serve/commit/64578fd9fead2f827ebb20b67f02e294ea44dd1b)] __-__ notebook fix (*Zac Li*)
+
+### 🍹 Other Improvements
+
+ - [[```c765a34d```](https://github.com/jina-ai/langchain-serve/commit/c765a34dd68d02875c2b7ae9324bcb36887f5ad2)] __-__ __version__: the next version will be 0.0.15 (*Jina Dev Bot*)
 
