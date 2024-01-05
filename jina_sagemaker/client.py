@@ -71,6 +71,12 @@ class Client:
                     f"Endpoint {endpoint_name} already exists and recreate={recreate}."
                 )
 
+        # Check if there is already endpoint config, if so delete it or it will block model.deploy
+        try:
+            self._sm_client.delete_endpoint_config(EndpointConfigName=endpoint_name)
+        except ClientError:
+            pass
+
         model = sagemaker.ModelPackage(
             role=role,
             model_data=None,
@@ -78,17 +84,11 @@ class Client:
             model_package_arn=arn,
         )
 
-        validation_params = dict(
-            model_data_download_timeout=2400,
-            container_startup_health_check_timeout=2400,
-        )
-
         try:
             model.deploy(
                 n_instances,
                 instance_type,
                 endpoint_name=endpoint_name,
-                **validation_params,
             )
         except ParamValidationError:
             model.deploy(n_instances, instance_type, endpoint_name=endpoint_name)
