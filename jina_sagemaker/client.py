@@ -133,7 +133,7 @@ class Client:
         role: Optional[str] = None,
         wait: bool = True,
         logs: bool = True,
-    ):
+    ) -> Optional[str]:
         import sagemaker
 
         if role is None:
@@ -190,6 +190,11 @@ class Client:
                 local_dir=download_output_path,
             )
             print(f"Output downloaded to {download_output_path}.")
+
+        job_name = None
+        if transformer.latest_transform_job is not None:
+            job_name = transformer.latest_transform_job.name
+        return job_name
 
     def _invoke_endpoint(self, texts: Union[str, List[str]]):
         if self._endpoint_name is None:
