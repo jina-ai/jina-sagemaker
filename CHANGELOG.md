@@ -13,6 +13,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -300,4 +301,24 @@
 ### 🍹 Other Improvements
 
  - [[```c765a34d```](https://github.com/jina-ai/langchain-serve/commit/c765a34dd68d02875c2b7ae9324bcb36887f5ad2)] __-__ __version__: the next version will be 0.0.15 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-16></a>
+## Release Note (`0.0.16`)
+
+> Release time: 2024-01-11 08:32:01
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Delgermurun Purevkhuu,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```0e22087a```](https://github.com/jina-ai/langchain-serve/commit/0e22087a6a4702eea618c044a3d934a97cda9036)] __-__ use input_path as s3 path if it is s3 path (*Delgermurun Purevkhuu*)
+ - [[```5f2b8f39```](https://github.com/jina-ai/langchain-serve/commit/5f2b8f39a5ac79ca1719cae41e552d1e8d97d7c8)] __-__ return newly created batch job name (*Delgermurun Purevkhuu*)
+
+### 🍹 Other Improvements
+
+ - [[```1abe46d0```](https://github.com/jina-ai/langchain-serve/commit/1abe46d06d84997ca21dec0c64adc2595a7ff34e)] __-__ __version__: the next version will be 0.0.16 (*Jina Dev Bot*)
 
