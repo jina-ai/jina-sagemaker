@@ -14,6 +14,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -321,4 +322,23 @@
 ### 🍹 Other Improvements
 
  - [[```1abe46d0```](https://github.com/jina-ai/langchain-serve/commit/1abe46d06d84997ca21dec0c64adc2595a7ff34e)] __-__ __version__: the next version will be 0.0.16 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-17></a>
+## Release Note (`0.0.17`)
+
+> Release time: 2024-01-31 07:50:57
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Delgermurun Purevkhuu,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```94f1831d```](https://github.com/jina-ai/langchain-serve/commit/94f1831dc01d7593e12518c6d62faf267785b18c)] __-__ pass boto session on sagemaker session (*Delgermurun Purevkhuu*)
+
+### 🍹 Other Improvements
+
+ - [[```99b2f29f```](https://github.com/jina-ai/langchain-serve/commit/99b2f29ff5cac91094161ae489d299ca9d9a4ed1)] __-__ __version__: the next version will be 0.0.17 (*Jina Dev Bot*)
 
