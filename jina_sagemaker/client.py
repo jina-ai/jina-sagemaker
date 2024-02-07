@@ -136,6 +136,8 @@ class Client:
         role: Optional[str] = None,
         wait: bool = True,
         logs: bool = True,
+        assemble_with: Optional[str] = None,
+        max_payload: Optional[int] = None,
     ) -> Optional[str]:
         import sagemaker
 
@@ -182,6 +184,8 @@ class Client:
             instance_type=instance_type,
             output_path=output_path,
             strategy="MultiRecord",
+            assemble_with=assemble_with,
+            max_payload=max_payload,
         )
 
         transformer.transform(
