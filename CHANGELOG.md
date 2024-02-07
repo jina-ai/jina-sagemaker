@@ -15,6 +15,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -341,4 +342,24 @@
 ### 🍹 Other Improvements
 
  - [[```99b2f29f```](https://github.com/jina-ai/langchain-serve/commit/99b2f29ff5cac91094161ae489d299ca9d9a4ed1)] __-__ __version__: the next version will be 0.0.17 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-18></a>
+## Release Note (`0.0.18`)
+
+> Release time: 2024-02-07 08:31:57
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Delgermurun,  Saahil Ognawala,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```fa9e2bf2```](https://github.com/jina-ai/langchain-serve/commit/fa9e2bf215db78adfb75556f24160cc2fa4911e6)] __-__ expose max_payload and assemble_with params (#19) (*Delgermurun*)
+
+### 🍹 Other Improvements
+
+ - [[```d7a3d7bd```](https://github.com/jina-ai/langchain-serve/commit/d7a3d7bdab190fcb4ef2365d12981cb82125d34e)] __-__ revert model package arn for batch transform (*Saahil Ognawala*)
+ - [[```e02d2b02```](https://github.com/jina-ai/langchain-serve/commit/e02d2b020149f68e47096e02fdb681c5e53a3493)] __-__ __version__: the next version will be 0.0.18 (*Jina Dev Bot*)
 
