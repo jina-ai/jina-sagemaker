@@ -208,7 +208,7 @@ class Client:
             job_name = transformer.latest_transform_job.name
         return job_name
 
-    def _invoke_endpoint(self, texts: Union[str, List[str]]):
+    def embed(self, texts: Union[str, List[str]]):
         if self._endpoint_name is None:
             raise Exception(
                 "No endpoint connected. " "Run connect_to_endpoint() first."
@@ -219,14 +219,34 @@ class Client:
         else:
             data = json.dumps({"data": [{"text": text} for text in texts]})
 
-        return self._sm_runtime_client.invoke_endpoint(
+        response = self._sm_runtime_client.invoke_endpoint(
             EndpointName=self._endpoint_name,
             ContentType="application/json",
             Body=data,
         )
 
-    def embed(self, texts: Union[str, List[str]]):
-        response = self._invoke_endpoint(texts)
+        resp = json.loads(response["Body"].read().decode())
+        return resp["data"]
+
+    def rerank(self, documents: List[str], query: str):
+        if self._endpoint_name is None:
+            raise Exception(
+                "No endpoint connected. " "Run connect_to_endpoint() first."
+            )
+
+        data = json.dumps(
+            {
+                "data": {"documents": [{"text": document} for document in documents]},
+                "query": query,
+            }
+        )
+
+        response = self._sm_runtime_client.invoke_endpoint(
+            EndpointName=self._endpoint_name,
+            ContentType="application/json",
+            Body=data,
+        )
+
         resp = json.loads(response["Body"].read().decode())
         return resp["data"]
 
