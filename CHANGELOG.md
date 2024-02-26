@@ -16,6 +16,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -362,4 +363,23 @@
 
  - [[```d7a3d7bd```](https://github.com/jina-ai/langchain-serve/commit/d7a3d7bdab190fcb4ef2365d12981cb82125d34e)] __-__ revert model package arn for batch transform (*Saahil Ognawala*)
  - [[```e02d2b02```](https://github.com/jina-ai/langchain-serve/commit/e02d2b020149f68e47096e02fdb681c5e53a3493)] __-__ __version__: the next version will be 0.0.18 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-19></a>
+## Release Note (`0.0.19`)
+
+> Release time: 2024-02-26 04:43:06
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```644d6406```](https://github.com/jina-ai/langchain-serve/commit/644d640698d763c8d926dccbcd364ead1c90c8b2)] __-__ add rerank api in client (*Zac Li*)
+
+### 🍹 Other Improvements
+
+ - [[```3d09effa```](https://github.com/jina-ai/langchain-serve/commit/3d09effafb2d11e08d5ed6e7585f518a4d3c2bc7)] __-__ __version__: the next version will be 0.0.19 (*Jina Dev Bot*)
 
