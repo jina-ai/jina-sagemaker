@@ -236,8 +236,10 @@ class Client:
 
         data = json.dumps(
             {
-                "data": {"documents": [{"text": document} for document in documents]},
-                "query": query,
+                "data": {
+                    "documents": [{"text": document} for document in documents],
+                    "query": query,
+                }
             }
         )
 
