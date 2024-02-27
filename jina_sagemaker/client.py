@@ -228,20 +228,24 @@ class Client:
         resp = json.loads(response["Body"].read().decode())
         return resp["data"]
 
-    def rerank(self, documents: List[str], query: str):
+    def rerank(self, documents: List[str], query: str, top_n: Optional[int] = None):
         if self._endpoint_name is None:
             raise Exception(
                 "No endpoint connected. " "Run connect_to_endpoint() first."
             )
 
-        data = json.dumps(
-            {
-                "data": {
-                    "documents": [{"text": document} for document in documents],
-                    "query": query,
-                }
+        payload = {
+            "data": {
+                "documents": [{"text": document} for document in documents],
+                "query": query,
             }
-        )
+        }
+        if top_n:
+            payload["data"]["top_n"] = (
+                top_n if top_n < len(documents) else len(documents)
+            )
+
+        data = json.dumps(payload)
 
         response = self._sm_runtime_client.invoke_endpoint(
             EndpointName=self._endpoint_name,
