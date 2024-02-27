@@ -18,6 +18,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -402,4 +403,23 @@
 ### 🍹 Other Improvements
 
  - [[```9c89cf3c```](https://github.com/jina-ai/langchain-serve/commit/9c89cf3ced5ceed2be83c0a7cf286ef4e1eb712c)] __-__ __version__: the next version will be 0.0.20 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-21></a>
+## Release Note (`0.0.21`)
+
+> Release time: 2024-02-27 08:10:19
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```2e4ce1aa```](https://github.com/jina-ai/langchain-serve/commit/2e4ce1aa93a5422e85b9711292cd12891bbee99b)] __-__ add top n option in rerank api (*Zac Li*)
+
+### 🍹 Other Improvements
+
+ - [[```14c5bdce```](https://github.com/jina-ai/langchain-serve/commit/14c5bdce597b669f10bfdc88dadd2d262f002421)] __-__ __version__: the next version will be 0.0.21 (*Jina Dev Bot*)
 
