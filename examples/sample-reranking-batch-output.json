@@ -1,0 +1,89 @@
+{
+    "data": [
+      {
+        "id": "3e37fa1a9dbe69fe93b7f77a09293fc5",
+        "query_usage": {
+          "id": "180ddba78a00c43b7f26ec91eba06ac9",
+          "total_tokens": 7
+        },
+        "results": [
+          {
+            "id": "88213a075d6ff9853f7ed6b73c907786",
+            "index": 0,
+            "document": {
+              "id": "e2a5e0aad72b58f1421e80bcc6125626",
+              "text": "the dog is in my house"
+            },
+            "relevance_score": 0.17895588278770447,
+            "usage": {
+              "id": "68ea81bb97827b45f45f93aeaeaa219e",
+              "total_tokens": 8
+            }
+          },
+          {
+            "id": "bfcf38e8101b4fb6689cd07ecdf484b8",
+            "index": 1,
+            "document": {
+              "id": "f5a0a91c4e0875a11c07d2d13193b872",
+              "text": "the cat looks good"
+            },
+            "relevance_score": 0.008283626288175583,
+            "usage": {
+              "id": "78bfaad04b7bed806fe8165c08862032",
+              "total_tokens": 6
+            }
+          }
+        ]
+      },
+      {
+        "id": "f7787bccb9dc81dd23647f4538764817",
+        "query_usage": {
+          "id": "d5c9a8beb580a15a93be28c4ea4e9010",
+          "total_tokens": 6
+        },
+        "results": [
+          {
+            "id": "cd5205448251db4f94cd0a0708ac4600",
+            "index": 1,
+            "document": {
+              "id": "4228445041b3b038bc59305eaa252e7e",
+              "text": "yes I do like cat"
+            },
+            "relevance_score": 0.9639160633087158,
+            "usage": {
+              "id": "aec7710b8b3e0a9c9c7a199be3fd125c",
+              "total_tokens": 7
+            }
+          },
+          {
+            "id": "263d192252625c2416c5cfd897784830",
+            "index": 2,
+            "document": {
+              "id": "1581628a5ca1e66484bffcf78b43b39c",
+              "text": "morning"
+            },
+            "relevance_score": 0.007093862164765596,
+            "usage": {
+              "id": "b6b79af1101a1369920ae37c2f5d6c66",
+              "total_tokens": 3
+            }
+          },
+          {
+            "id": "7df86610f19525d141f71677f710fe70",
+            "index": 0,
+            "document": {
+              "id": "1bd12bbd39d6bbd2f3517789c0ecd516",
+              "text": "cash is king"
+            },
+            "relevance_score": 0.006217078305780888,
+            "usage": {
+              "id": "b3291bdd7f97d9172f886698f10a4ead",
+              "total_tokens": 5
+            }
+          }
+        ]
+      }
+    ],
+    "parameters": {}
+  }
+  
