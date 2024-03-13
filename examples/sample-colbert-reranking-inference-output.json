@@ -1,0 +1,41 @@
+{
+    "data": [
+      {
+        "id": "74a56c1ca25408c9b19a8a6ad213d800",
+        "query_usage": {
+          "id": "1c20df2bc623a428435bda1ec8ce3432",
+          "total_tokens": 7
+        },
+        "results": [
+          {
+            "id": "b0fcf4d1cee733003e2b8f5ee86bb277",
+            "index": 0,
+            "document": {
+              "id": "ba498618c775a150cdd301bdfb03929f",
+              "text": "the dog is in my house"
+            },
+            "relevance_score": 4.265625,
+            "usage": {
+              "id": "0c1ac352a0013e70a8d6fc077743bbec",
+              "total_tokens": 9
+            }
+          },
+          {
+            "id": "366bba61d41bb8c8f7d26d75606b4fa1",
+            "index": 2,
+            "document": {
+              "id": "beea21977416d975ad416e8c022cf7f7",
+              "text": "hello world"
+            },
+            "relevance_score": 1.884765625,
+            "usage": {
+              "id": "4fb197d69605e430d72c40f0be7a7821",
+              "total_tokens": 5
+            }
+          }
+        ]
+      }
+    ],
+    "parameters": {}
+  }
+  
