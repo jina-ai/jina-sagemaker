@@ -1,0 +1,9 @@
+{
+    "data": {
+        "documents": [{"text": "the dog is in my house"},
+                      {"text": "he likes dog"},
+                      {"text": "hello world"}],
+        "query": "where is the dog",
+        "top_n": 2
+    }
+}
