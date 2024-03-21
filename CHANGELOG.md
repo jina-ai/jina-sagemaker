@@ -21,6 +21,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -468,4 +469,23 @@
 
  - [[```bb47cc26```](https://github.com/jina-ai/langchain-serve/commit/bb47cc26aa3e47a2376b2f7747bb5587cb167d91)] __-__ make input_type import easier (*Zac Li*)
  - [[```ca767f63```](https://github.com/jina-ai/langchain-serve/commit/ca767f635f070bbb5c2a2523f10b989be9b37613)] __-__ __version__: the next version will be 0.0.23 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-24></a>
+## Release Note (`0.0.24`)
+
+> Release time: 2024-03-21 05:24:11
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```c497b1e1```](https://github.com/jina-ai/langchain-serve/commit/c497b1e132e42c674608f0224601f9deba451187)] __-__ input_type bug (*Zac Li*)
+
+### 🍹 Other Improvements
+
+ - [[```5eff3c6e```](https://github.com/jina-ai/langchain-serve/commit/5eff3c6ede4d6350dd446be58dbd87d34aaa3cf8)] __-__ __version__: the next version will be 0.0.24 (*Jina Dev Bot*)
 
