@@ -2,12 +2,18 @@ import json
 import logging
 import os
 import uuid
+from enum import Enum
 from typing import Dict, List, Optional, Union
 
 import boto3
 from botocore.exceptions import ClientError, ParamValidationError
 
 from .helper import download_s3_folder, get_role, prefix_csv_with_ids
+
+
+class InputType(Enum):
+    DOCUMENT = "document"
+    QUERY = "query"
 
 
 class Client:
@@ -208,16 +214,45 @@ class Client:
             job_name = transformer.latest_transform_job.name
         return job_name
 
-    def embed(self, texts: Union[str, List[str]]):
+    def embed(
+        self,
+        texts: Union[str, List[str]],
+        use_colbert: bool = False,
+        input_type: InputType = InputType.DOCUMENT,
+    ):
+        """
+        Embeds the given texts.
+
+        Parameters:
+            - texts (Union[str, List[str]]): The text or texts to embed. Can be a single
+            string or a list of strings.
+            - use_colbert (bool, optional): A flag indicating ColBERT model is used for embedding.
+            - input_type (InputType, optional): The type of input texts, indicating whether
+            they should be treated as documents or queries. This is only needed when use_colbert is True.
+        """
+
         if self._endpoint_name is None:
             raise Exception(
                 "No endpoint connected. " "Run connect_to_endpoint() first."
             )
 
-        if isinstance(texts, str):
-            data = json.dumps({"data": {"text": texts}})
+        if not use_colbert:
+            if isinstance(texts, str):
+                data = json.dumps({"data": {"text": texts}})
+            else:
+                data = json.dumps({"data": [{"text": text} for text in texts]})
         else:
-            data = json.dumps({"data": [{"text": text} for text in texts]})
+            if isinstance(texts, str):
+                data = json.dumps(
+                    {"data": {"text": texts}, "parameters": {"input_type": input_type}}
+                )
+            else:
+                data = json.dumps(
+                    {
+                        "data": [{"text": text} for text in texts],
+                        "parameters": {"input_type": input_type},
+                    }
+                )
 
         response = self._sm_runtime_client.invoke_endpoint(
             EndpointName=self._endpoint_name,
