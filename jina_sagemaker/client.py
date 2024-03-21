@@ -244,13 +244,16 @@ class Client:
         else:
             if isinstance(texts, str):
                 data = json.dumps(
-                    {"data": {"text": texts}, "parameters": {"input_type": input_type}}
+                    {
+                        "data": {"text": texts},
+                        "parameters": {"input_type": input_type.value},
+                    }
                 )
             else:
                 data = json.dumps(
                     {
                         "data": [{"text": text} for text in texts],
-                        "parameters": {"input_type": input_type},
+                        "parameters": {"input_type": input_type.value},
                     }
                 )
 
