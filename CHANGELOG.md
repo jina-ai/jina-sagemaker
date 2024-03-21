@@ -20,6 +20,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -451,4 +452,20 @@
 
  - [[```ecbe54ba```](https://github.com/jina-ai/langchain-serve/commit/ecbe54ba021126f8473af1a55ccebed9a67e5053)] __-__ Revert &#34;docs: update reranking model id&#34; (*Zac Li*)
  - [[```f71d9819```](https://github.com/jina-ai/langchain-serve/commit/f71d9819c55994a6ea811b173ad365a74103b770)] __-__ __version__: the next version will be 0.0.22 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-23></a>
+## Release Note (`0.0.23`)
+
+> Release time: 2024-03-21 04:32:17
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  Jina Dev Bot,  🙇
+
+
+### 🍹 Other Improvements
+
+ - [[```bb47cc26```](https://github.com/jina-ai/langchain-serve/commit/bb47cc26aa3e47a2376b2f7747bb5587cb167d91)] __-__ make input_type import easier (*Zac Li*)
+ - [[```ca767f63```](https://github.com/jina-ai/langchain-serve/commit/ca767f635f070bbb5c2a2523f10b989be9b37613)] __-__ __version__: the next version will be 0.0.23 (*Jina Dev Bot*)
 
