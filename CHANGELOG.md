@@ -19,6 +19,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -422,4 +423,32 @@
 ### 🍹 Other Improvements
 
  - [[```14c5bdce```](https://github.com/jina-ai/langchain-serve/commit/14c5bdce597b669f10bfdc88dadd2d262f002421)] __-__ __version__: the next version will be 0.0.21 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-22></a>
+## Release Note (`0.0.22`)
+
+> Release time: 2024-03-21 04:27:56
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```fc68b7ab```](https://github.com/jina-ai/langchain-serve/commit/fc68b7abaff20505e66166af4641bbbd455717b7)] __-__ colbert embed change (*Zac Li*)
+
+### 📗 Documentation
+
+ - [[```886e328f```](https://github.com/jina-ai/langchain-serve/commit/886e328fa2678f58f58b1fd26fc49a6423deec46)] __-__ colbert examples (*Zac Li*)
+ - [[```6acb9a09```](https://github.com/jina-ai/langchain-serve/commit/6acb9a09b8964edd915e350d25e05e13d6b2d3c4)] __-__ update reranking model id (*Zac Li*)
+ - [[```a10daaa5```](https://github.com/jina-ai/langchain-serve/commit/a10daaa59bb389d2883ce4dc8f3a843fc7d5c201)] __-__ reranker more examples (*Zac Li*)
+ - [[```56be19f7```](https://github.com/jina-ai/langchain-serve/commit/56be19f738eb640c9caeb2d5a03366fc2b7e881a)] __-__ reranker examples (*Zac Li*)
+ - [[```b252c84f```](https://github.com/jina-ai/langchain-serve/commit/b252c84f82fdc375ffe6c6172a5a5201762edd33)] __-__ add reranking notebook (*Zac Li*)
+
+### 🍹 Other Improvements
+
+ - [[```ecbe54ba```](https://github.com/jina-ai/langchain-serve/commit/ecbe54ba021126f8473af1a55ccebed9a67e5053)] __-__ Revert &#34;docs: update reranking model id&#34; (*Zac Li*)
+ - [[```f71d9819```](https://github.com/jina-ai/langchain-serve/commit/f71d9819c55994a6ea811b173ad365a74103b770)] __-__ __version__: the next version will be 0.0.22 (*Jina Dev Bot*)
 
