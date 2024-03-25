@@ -1,22 +1,25 @@
 {
     "data": [
-        {
-            "text": "How is the weather today?"
-        },
-        {
-            "text": "What is the weather like today?"
-        },
-        {
-            "text": "What's the color of an orange?"
-        },
-        {
-            "text": "What are the hours?"
-        },
-        {
-            "text": "Are you open on weekends?"
-        },
-        {
-            "text": "Are you available on holidays?"
-        }
-    ]
-}
+      {
+        "text": "How is the weather today?"
+      },
+      {
+        "text": "What is the weather like today?"
+      },
+      {
+        "text": "What's the color of an orange?"
+      },
+      {
+        "text": "What are the hours?"
+      },
+      {
+        "text": "Are you open on weekends?"
+      },
+      {
+        "text": "Are you available on holidays?"
+      }
+    ],
+    "parameters": {
+      "input_type": "document"
+    }
+  }
