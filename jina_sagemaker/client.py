@@ -216,7 +216,8 @@ class Client:
 
     def embed(
         self,
-        texts: Union[str, List[str]],
+        texts: Optional[Union[str, List[str]]] = None,
+        image_urls: Optional[Union[str, List[str]]] = None,
         use_colbert: bool = False,
         input_type: InputType = InputType.DOCUMENT,
     ):
@@ -237,10 +238,18 @@ class Client:
             )
 
         if not use_colbert:
-            if isinstance(texts, str):
-                data = json.dumps({"data": {"text": texts}})
-            else:
-                data = json.dumps({"data": [{"text": text} for text in texts]})
+            if texts:
+                if isinstance(texts, str):
+                    data = json.dumps({"data": {"text": texts}})
+                else:
+                    data = json.dumps({"data": [{"text": text} for text in texts]})
+            if image_urls:
+                if isinstance(image_urls, str):
+                    data = json.dumps({"data": {"url": image_urls}})
+                else:
+                    data = json.dumps(
+                        {"data": [{"url": image_url} for image_url in image_urls]}
+                    )
         else:
             if isinstance(texts, str):
                 data = json.dumps(
