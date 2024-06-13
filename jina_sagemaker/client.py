@@ -225,8 +225,10 @@ class Client:
         Embeds the given texts.
 
         Parameters:
-            - texts (Union[str, List[str]]): The text or texts to embed. Can be a single
+            - texts (Optional[Union[str, List[str]]]): The text or texts to embed. Can be a single
             string or a list of strings.
+            - image_urls (Optional[Union[str, List[str]]]): The image or images to embed. Can be a single
+            URL or a list of URLs.
             - use_colbert (bool, optional): A flag indicating ColBERT model is used for embedding.
             - input_type (InputType, optional): The type of input texts, indicating whether
             they should be treated as documents or queries. This is only needed when use_colbert is True.
