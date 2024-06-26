@@ -1,0 +1,39 @@
+{
+    "data": {
+      "documents": [
+        {
+          "text": "Organic skincare for sensitive skin with aloe vera and chamomile."
+        },
+        {
+          "text": "New makeup trends focus on bold colors and innovative techniques"
+        },
+        {
+          "text": "Bio-Hautpflege für empfindliche Haut mit Aloe Vera und Kamille"
+        },
+        {
+          "text": "Neue Make-up-Trends setzen auf kräftige Farben und innovative Techniken"
+        },
+        {
+          "text": "Cuidado de la piel orgánico para piel sensible con aloe vera y manzanilla"
+        },
+        {
+          "text": "Las nuevas tendencias de maquillaje se centran en colores vivos y técnicas innovadoras"
+        },
+        {
+          "text": "针对敏感肌专门设计的天然有机护肤产品"
+        },
+        {
+          "text": "新的化妆趋势注重鲜艳的颜色和创新的技巧"
+        },
+        {
+          "text": "敏感肌のために特別に設計された天然有機スキンケア製品"
+        },
+        {
+          "text": "新しいメイクのトレンドは鮮やかな色と革新的な技術に焦点を当てています"
+        }
+      ],
+      "query": "Organic skincare products for sensitive skin",
+      "top_n": 3
+    }
+  }
+  

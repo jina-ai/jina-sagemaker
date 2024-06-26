@@ -1,0 +1,57 @@
+{
+    "data": [
+      {
+        "docs_usage": {
+          "id": "dbf58f0cb84d53551196c93e87a9c5d0",
+          "total_tokens": 175
+        },
+        "id": "a5d58365fc5d9320c213f1a4be6a5b7f",
+        "query_usage": {
+          "id": "15eea4e334edce0ce960bc976426f285",
+          "total_tokens": 9
+        },
+        "results": [
+          {
+            "document": {
+              "id": "6a183985d86ecdbf52c8ee7931f79e12",
+              "text": "针对敏感肌专门设计的天然有机护肤产品"
+            },
+            "id": "539bc902f191f36e9fc5659ad7698b5f",
+            "index": 6,
+            "relevance_score": 0.9259026646614075,
+            "usage": {
+              "id": "bd41a4551807dc30e585064a912da4fa",
+              "total_tokens": 14
+            }
+          },
+          {
+            "document": {
+              "id": "c790745ff2a9b63dc8680ec29a953273",
+              "text": "敏感肌のために特別に設計された天然有機スキンケア製品"
+            },
+            "id": "e9a14beda305c9817d3823bb6cc96642",
+            "index": 8,
+            "relevance_score": 0.842215359210968,
+            "usage": {
+              "id": "efb1cff07007336ef2cfaaaa7ecd0713",
+              "total_tokens": 14
+            }
+          },
+          {
+            "document": {
+              "id": "9f4afacefcb114defd8acfcf801fc6ad",
+              "text": "Organic skincare for sensitive skin with aloe vera and chamomile."
+            },
+            "id": "d72dc4c2ba95e6d8b1dbcadebc017169",
+            "index": 0,
+            "relevance_score": 0.8308687806129456,
+            "usage": {
+              "id": "26457c9653bb9cd5b97969b7cfd6752e",
+              "total_tokens": 16
+            }
+          }
+        ]
+      }
+    ]
+  }
+  
