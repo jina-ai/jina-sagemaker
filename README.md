@@ -1,5 +1,5 @@
 <p align="center">
-<h2 align="center">Jina Embedding Models on AWS SageMaker</h2>
+<h2 align="center">Jina Models on AWS SageMaker</h2>
 </p>
 
 
@@ -27,8 +27,5 @@ python setup.py install
 
 Please configure your AWS credentials before using this package. You can do this by following the instructions [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html).
 
-Following notebooks give an overview of how to use the package for inference and batch transform jobs:
-
-- [Real-time Inference](notebooks/Real-time%20inference.ipynb)
-- [Batch Transform](notebooks/Batch%20transform.ipynb)
+Please follow the examples in `notebooks` to get an overview of how to use model packages offered for real time inference and batch transform jobs.
 
