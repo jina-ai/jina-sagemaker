@@ -48,7 +48,7 @@ class Client:
             return False
         return True
 
-    def connect_to_endpoint(self, endpoint_name: str) -> None:
+    def connect_to_endpoint(self, endpoint_name: str, arn: str) -> None:
         if not self._does_endpoint_exist(endpoint_name):
             raise Exception(f"Endpoint {endpoint_name} does not exist.")
         self._endpoint_name = endpoint_name
@@ -56,6 +56,7 @@ class Client:
         self._resource_id = "endpoint/{}/variant/{}".format(
             self._endpoint_name, self._variant_name
         )
+        self._arn = arn
 
     def create_endpoint(
         self,
@@ -73,7 +74,7 @@ class Client:
 
         if self._does_endpoint_exist(endpoint_name):
             if recreate:
-                self.connect_to_endpoint(endpoint_name)
+                self.connect_to_endpoint(endpoint_name, arn)
                 self.delete_endpoint()
             else:
                 raise Exception(
@@ -102,7 +103,7 @@ class Client:
         except ParamValidationError:
             model.deploy(n_instances, instance_type, endpoint_name=endpoint_name)
 
-        self.connect_to_endpoint(endpoint_name)
+        self.connect_to_endpoint(endpoint_name, arn)
 
     def register_scalable_target(self, max_capacity, min_capacity=1):
         return self._aas_client.register_scalable_target(
@@ -214,6 +215,33 @@ class Client:
             job_name = transformer.latest_transform_job.name
         return job_name
 
+    def read(self, htmls: str, stream: bool = False):
+        if self._endpoint_name is None:
+            raise Exception(
+                "No endpoint connected. " "Run connect_to_endpoint() first."
+            )
+
+        model = "reader-lm-0.5b"
+        if "1500m" in self._arn:
+            model = "reader-lm-1.5b"
+
+        data = json.dumps(
+            {
+                "model": model,
+                "prompt": htmls,
+                "stream": stream,
+            }
+        )
+
+        response = self._sm_runtime_client.invoke_endpoint(
+            EndpointName=self._endpoint_name,
+            ContentType="application/json",
+            Body=data,
+        )
+
+        resp = json.loads(response["Body"].read().decode())
+        return resp
+
     def embed(
         self,
         texts: Optional[Union[str, List[str]]] = None,
@@ -225,10 +253,8 @@ class Client:
         Embeds the given texts.
 
         Parameters:
-            - texts (Optional[Union[str, List[str]]]): The text or texts to embed. Can be a single
+            - texts (Union[str, List[str]]): The text or texts to embed. Can be a single
             string or a list of strings.
-            - image_urls (Optional[Union[str, List[str]]]): The image or images to embed. Can be a single
-            URL or a list of URLs.
             - use_colbert (bool, optional): A flag indicating ColBERT model is used for embedding.
             - input_type (InputType, optional): The type of input texts, indicating whether
             they should be treated as documents or queries. This is only needed when use_colbert is True.
