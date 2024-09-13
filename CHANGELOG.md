@@ -22,6 +22,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -488,4 +489,23 @@
 ### 🍹 Other Improvements
 
  - [[```5eff3c6e```](https://github.com/jina-ai/langchain-serve/commit/5eff3c6ede4d6350dd446be58dbd87d34aaa3cf8)] __-__ __version__: the next version will be 0.0.24 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-26></a>
+## Release Note (`0.0.26`)
+
+> Release time: 2024-09-13 08:52:26
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  🙇
+
+
+### 📗 Documentation
+
+ - [[```aed25da9```](https://github.com/jina-ai/langchain-serve/commit/aed25da9fd4b520e5a9fb1aded529ebfe71fadc0)] __-__ readme wording (*Zac Li*)
+
+### 🍹 Other Improvements
+
+ - [[```a371a618```](https://github.com/jina-ai/langchain-serve/commit/a371a618a6b02d62cfd12fb521f223b43e4aaecb)] __-__ tweak version (*Zac Li*)
 
