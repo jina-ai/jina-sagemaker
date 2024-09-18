@@ -1,3 +1,3 @@
 __version__ = '0.0.26'
 
-from .client import Client, InputType
+from .client import Client, InputType, Task

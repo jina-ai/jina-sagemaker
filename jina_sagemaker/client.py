@@ -16,6 +16,14 @@ class InputType(Enum):
     QUERY = "query"
 
 
+class Task(Enum):
+    RETRIEVAL_QUERY = "retrieval.query"
+    RETRIEVAL_PASSAGE = "retrieval.passage"
+    TEXT_MATCHING = "text-matching"
+    CLASSIFICATION = "classification"
+    SEPARATION = "separation"
+
+
 class Client:
     def __init__(
         self,
@@ -246,8 +254,11 @@ class Client:
         self,
         texts: Optional[Union[str, List[str]]] = None,
         image_urls: Optional[Union[str, List[str]]] = None,
-        use_colbert: bool = False,
-        input_type: InputType = InputType.DOCUMENT,
+        use_colbert: Optional[bool] = False,
+        input_type: Optional[InputType] = InputType.DOCUMENT,
+        task_type: Optional[Task] = Task.TEXT_MATCHING,
+        dimensions: Optional[int] = None,
+        late_chunking: Optional[bool] = False,
     ):
         """
         Embeds the given texts.
@@ -258,6 +269,9 @@ class Client:
             - use_colbert (bool, optional): A flag indicating ColBERT model is used for embedding.
             - input_type (InputType, optional): The type of input texts, indicating whether
             they should be treated as documents or queries. This is only needed when use_colbert is True.
+            - task_type (Task, optional): Task type.
+            - dimensions (Optional[int], optional): Number of embedding dimensions.
+            - late_chunking (Optional[bool], optional): Perform chunking later in the pipeline.
         """
 
         if self._endpoint_name is None:
@@ -268,9 +282,18 @@ class Client:
         if not use_colbert:
             if texts:
                 if isinstance(texts, str):
-                    data = json.dumps({"data": {"text": texts}})
+                    data = {"data": {"text": texts}}
                 else:
-                    data = json.dumps({"data": [{"text": text} for text in texts]})
+                    data = {"data": [{"text": text} for text in texts]}
+
+                if 'jina-embeddings-v3' in self._arn:
+                    data["parameters"] = {
+                        "task": task_type.value,
+                        "dimenisons": dimensions,
+                        "late_chunking": late_chunking,
+                    }
+                data = json.dumps(data)
+
             if image_urls:
                 if isinstance(image_urls, str):
                     data = json.dumps({"data": {"url": image_urls}})
