@@ -269,9 +269,9 @@ class Client:
             - use_colbert (bool, optional): A flag indicating ColBERT model is used for embedding.
             - input_type (InputType, optional): The type of input texts, indicating whether
             they should be treated as documents or queries. This is only needed when use_colbert is True.
-            - task_type (Task, optional): Task type.
-            - dimensions (Optional[int], optional): Number of embedding dimensions.
-            - late_chunking (Optional[bool], optional): Perform chunking later in the pipeline.
+            - task_type (Task, optional): Select the downstream task for which the embeddings will be used. The model will return the optimized embeddings for that task..
+            - dimensions (Optional[int], optional): Output dimensions. Smaller dimensions are easier to store and retrieve, with minimal performance impact thanks to MRL.
+            - late_chunking (Optional[bool], optional): Apply the late chunking technique to leverage the model's long-context capabilities for generating contextual chunk embeddings.
         """
 
         if self._endpoint_name is None:
@@ -289,7 +289,7 @@ class Client:
                 if 'jina-embeddings-v3' in self._arn:
                     data["parameters"] = {
                         "task": task_type.value,
-                        "dimenisons": dimensions,
+                        "dimensions": dimensions,
                         "late_chunking": late_chunking,
                     }
                 data = json.dumps(data)
