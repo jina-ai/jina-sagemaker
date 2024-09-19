@@ -269,7 +269,7 @@ class Client:
             - use_colbert (bool, optional): A flag indicating ColBERT model is used for embedding.
             - input_type (InputType, optional): The type of input texts, indicating whether
             they should be treated as documents or queries. This is only needed when use_colbert is True.
-            - task_type (Task, optional): Select the downstream task for which the embeddings will be used. The model will return the optimized embeddings for that task..
+            - task_type (Task, optional): Select the downstream task for which the embeddings will be used. The model will return the optimized embeddings for that task.
             - dimensions (Optional[int], optional): Output dimensions. Smaller dimensions are easier to store and retrieve, with minimal performance impact thanks to MRL.
             - late_chunking (Optional[bool], optional): Apply the late chunking technique to leverage the model's long-context capabilities for generating contextual chunk embeddings.
         """
