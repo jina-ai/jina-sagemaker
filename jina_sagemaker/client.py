@@ -288,7 +288,7 @@ class Client:
 
                 if 'jina-embeddings-v3' in self._arn:
                     data["parameters"] = {
-                        "task": task_type.value,
+                        "task": task_type.value if task_type else None,
                         "dimensions": dimensions,
                         "late_chunking": late_chunking,
                     }
