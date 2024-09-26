@@ -26,6 +26,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -572,4 +573,28 @@
 ### 🍹 Other Improvements
 
  - [[```92e31957```](https://github.com/jina-ai/langchain-serve/commit/92e31957d52cec8a1b38c1967bd05fd7e025519b)] __-__ __version__: the next version will be 0.0.29 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-30></a>
+## Release Note (`0.0.30`)
+
+> Release time: 2024-09-26 04:37:45
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```fc5bd72a```](https://github.com/jina-ai/langchain-serve/commit/fc5bd72a0e7207227b8d79d8cf5060a47dbddfef)] __-__ change v3 embed task_type default (*Zac Li*)
+ - [[```c8a2b607```](https://github.com/jina-ai/langchain-serve/commit/c8a2b6070b2543bc75f8221808d21a107e5e7a33)] __-__ reader doc display (*Zac Li*)
+
+### 📗 Documentation
+
+ - [[```0a82cbe9```](https://github.com/jina-ai/langchain-serve/commit/0a82cbe99d141d6b1e1692717b2cd70cbd3e4bd3)] __-__ update arns and links for reader lm (*Zac Li*)
+
+### 🍹 Other Improvements
+
+ - [[```4d3b8ba5```](https://github.com/jina-ai/langchain-serve/commit/4d3b8ba5094b91da7470e9b80c47b6f1525f788c)] __-__ __version__: the next version will be 0.0.30 (*Jina Dev Bot*)
 
