@@ -28,6 +28,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -617,4 +618,24 @@
 ### 🍹 Other Improvements
 
  - [[```45725ff8```](https://github.com/jina-ai/langchain-serve/commit/45725ff8c74256dccd3b782faa99a15cec8967dc)] __-__ __version__: the next version will be 0.0.31 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-32></a>
+## Release Note (`0.0.32`)
+
+> Release time: 2024-11-20 08:09:42
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  Aaron Ji,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```c944a653```](https://github.com/jina-ai/langchain-serve/commit/c944a653e201d69d5efe62672a32af4e32025dcf)] __-__ support parameters in clipv2 embed (*Zac Li*)
+ - [[```2f82c943```](https://github.com/jina-ai/langchain-serve/commit/2f82c94396d21f8a5a1c6143058542ca6e5edad9)] __-__ add input and output data for clip-v2 (*Aaron Ji*)
+
+### 🍹 Other Improvements
+
+ - [[```829d31b3```](https://github.com/jina-ai/langchain-serve/commit/829d31b3e7ea6d260d21fa5027be02d9a0db3421)] __-__ __version__: the next version will be 0.0.32 (*Jina Dev Bot*)
 
