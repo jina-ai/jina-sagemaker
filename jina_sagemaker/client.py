@@ -292,6 +292,12 @@ class Client:
                         "dimensions": dimensions,
                         "late_chunking": late_chunking,
                     }
+                elif 'jina-clip-v2' in self._arn:
+                    data["parameters"] = {
+                        "task": task_type.value if task_type else None,
+                        "dimensions": dimensions,
+                    }
+
                 data = json.dumps(data)
 
             if image_urls:
