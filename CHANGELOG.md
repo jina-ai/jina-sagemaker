@@ -29,6 +29,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -638,4 +639,24 @@
 ### 🍹 Other Improvements
 
  - [[```829d31b3```](https://github.com/jina-ai/langchain-serve/commit/829d31b3e7ea6d260d21fa5027be02d9a0db3421)] __-__ __version__: the next version will be 0.0.32 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-33></a>
+## Release Note (`0.0.33`)
+
+> Release time: 2025-01-08 06:11:42
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```7b410efa```](https://github.com/jina-ai/langchain-serve/commit/7b410efad469795112a2ca5eef4d3f584ad54112)] __-__ support bytes input for jclip (*Zac Li*)
+ - [[```2d060e06```](https://github.com/jina-ai/langchain-serve/commit/2d060e06291fe118d7836290cd11176644765196)] __-__ support jclip-v2 (*Zac Li*)
+
+### 🍹 Other Improvements
+
+ - [[```2016c8bd```](https://github.com/jina-ai/langchain-serve/commit/2016c8bd2f44f4d1a75e08a0e61a08159d7b6553)] __-__ __version__: the next version will be 0.0.33 (*Jina Dev Bot*)
 
