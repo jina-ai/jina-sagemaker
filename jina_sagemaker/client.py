@@ -254,6 +254,7 @@ class Client:
         self,
         texts: Optional[Union[str, List[str]]] = None,
         image_urls: Optional[Union[str, List[str]]] = None,
+        image_bytes: Optional[Union[str, List[str]]] = None,
         use_colbert: Optional[bool] = False,
         input_type: Optional[InputType] = InputType.DOCUMENT,
         task_type: Optional[Task] = None,
@@ -266,6 +267,10 @@ class Client:
         Parameters:
             - texts (Union[str, List[str]]): The text or texts to embed. Can be a single
             string or a list of strings.
+            - image_urls (Optional[Union[str, List[str]]]): URLs of the images to embed. Can be a single
+            URL or a list of URLs.
+            - image_bytes (Optional[Union[str, List[str]]]): Bytes of the images to embed. Can be a single
+            byte string or a list of byte strings.
             - use_colbert (bool, optional): A flag indicating ColBERT model is used for embedding.
             - input_type (InputType, optional): The type of input texts, indicating whether
             they should be treated as documents or queries. This is only needed when use_colbert is True.
@@ -306,6 +311,13 @@ class Client:
                 else:
                     data = json.dumps(
                         {"data": [{"url": image_url} for image_url in image_urls]}
+                    )
+            if image_bytes:
+                if isinstance(image_bytes, str):
+                    data = json.dumps({"data": {"bytes": image_bytes}})
+                else:
+                    data = json.dumps(
+                        {"data": [{"bytes": image_byte} for image_byte in image_bytes]}
                     )
         else:
             if isinstance(texts, str):
