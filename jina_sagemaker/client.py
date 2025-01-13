@@ -232,6 +232,8 @@ class Client:
         model = "reader-lm-0.5b"
         if "1500m" in self._arn:
             model = "reader-lm-1.5b"
+        elif "v2" in self._arn:
+            model = "ReaderLM-v2"
 
         data = json.dumps(
             {
