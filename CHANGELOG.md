@@ -30,6 +30,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -659,4 +660,24 @@
 ### 🍹 Other Improvements
 
  - [[```2016c8bd```](https://github.com/jina-ai/langchain-serve/commit/2016c8bd2f44f4d1a75e08a0e61a08159d7b6553)] __-__ __version__: the next version will be 0.0.33 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-34></a>
+## Release Note (`0.0.34`)
+
+> Release time: 2025-01-13 07:01:22
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```9a843fee```](https://github.com/jina-ai/jina-sagemaker/commit/9a843feea3b6829aaab4ebe6ef8e03910bc8af39)] __-__ support reader lm v2 (*Zac Li*)
+
+### 🍹 Other Improvements
+
+ - [[```9267c195```](https://github.com/jina-ai/jina-sagemaker/commit/9267c1952ca2f704e721f98bd100359cc0bba770)] __-__ repo ref fix (*Zac Li*)
+ - [[```fe383999```](https://github.com/jina-ai/jina-sagemaker/commit/fe38399928a2145c065772b46fc56a7dd6d21ecd)] __-__ __version__: the next version will be 0.0.34 (*Jina Dev Bot*)
 
