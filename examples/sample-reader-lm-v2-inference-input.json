@@ -1,0 +1,5 @@
+{
+    "model": "ReaderLM-v2",
+    "prompt": "<html><head><title>Minimal Bullet Points</title></head><body><ul><li>hello</li><li>jina.ai</li></ul></body></html>",
+    "stream": false
+}
