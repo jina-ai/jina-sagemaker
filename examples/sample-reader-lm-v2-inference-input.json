@@ -1,5 +1,5 @@
 {
     "model": "ReaderLM-v2",
-    "prompt": "<html><head><title>Minimal Bullet Points</title></head><body><ul><li>hello</li><li>jina.ai</li></ul></body></html>",
+    "prompt": "Extract the main content from the given HTML and convert it to Markdown format.\n```html\n<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Phone Book</title></head><body><h1>Phone Book</h1><div class=\"contact\"><h2>John Doe</h2><p>Email: <a href=\"mailto:john.doe@example.com\">john.doe@example.com</a></p></div><div class=\"contact\"><h2>Jane Smith</h2><p>Email: <a href=\"mailto:jane.smith@example.com\">jane.smith@example.com</a></p></div></body></html>\n```",
     "stream": false
 }
