@@ -223,7 +223,7 @@ class Client:
             job_name = transformer.latest_transform_job.name
         return job_name
 
-    def read(self, htmls: str, stream: bool = False):
+    def read(self, prompt: str, stream: bool = False):
         if self._endpoint_name is None:
             raise Exception(
                 "No endpoint connected. " "Run connect_to_endpoint() first."
@@ -238,7 +238,7 @@ class Client:
         data = json.dumps(
             {
                 "model": model,
-                "prompt": htmls,
+                "prompt": prompt,
                 "stream": stream,
             }
         )
