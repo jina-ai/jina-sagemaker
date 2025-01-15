@@ -1,1 +1,21 @@
-{"id":"cmpl-7815542db3cb45deb39464d6cb6a0837","object":"text_completion","created":1736922700,"model":"ReaderLM-v2","choices":[{"index":0,"text":"```markdown\nPhone Book\n==========\n\nJohn Doe\n--------\n\nEmail: [john.doe@example.com](mailto:john.doe@example.com)\n\nJane Smith\n----------\n\nEmail: [jane.smith@example.com](mailto:jane.smith@example.com)\n```\n","logprobs":null,"finish_reason":"stop","stop_reason":null,"prompt_logprobs":null}],"usage":{"prompt_tokens":161,"total_tokens":215,"completion_tokens":54}}
+{
+    "id": "cmpl-7815542db3cb45deb39464d6cb6a0837",
+    "object": "text_completion",
+    "created": 1736922700,
+    "model": "ReaderLM-v2",
+    "choices": [
+      {
+        "index": 0,
+        "text": "```markdown\nPhone Book\n==========\n\nJohn Doe\n--------\n\nEmail: [john.doe@example.com](mailto:john.doe@example.com)\n\nJane Smith\n----------\n\nEmail: [jane.smith@example.com](mailto:jane.smith@example.com)\n```\n",
+        "logprobs": null,
+        "finish_reason": "stop",
+        "stop_reason": null,
+        "prompt_logprobs": null
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 161,
+      "total_tokens": 215,
+      "completion_tokens": 54
+    }
+  }
