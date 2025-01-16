@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import time
 import uuid
 from enum import Enum
 from typing import Dict, List, Optional, Union
@@ -81,6 +82,9 @@ class Client:
         role: Optional[str] = None,
         success_topic: Optional[str] = None,
         error_topic: Optional[str] = None,
+        wait: bool = True,
+        poll_interval: int = 30,
+        timeout: int = 3600,
     ) -> None:
         """
         Creates an asynchronous SageMaker endpoint from a model package ARN.
@@ -95,38 +99,34 @@ class Client:
             role (Optional[str]): The IAM role ARN to associate with the model.
             success_topic (Optional[str]): SNS topic ARN for successful inference notifications (default: None).
             error_topic (Optional[str]): SNS topic ARN for error notifications (default: None).
+            wait (bool): Whether to wait for the endpoint to be fully deployed (default: True).
+            poll_interval (int): Interval in seconds to check the endpoint status (default: 30).
+            timeout (int): Maximum time in seconds to wait for the endpoint to be deployed (default: 3600).
         """
         from botocore.exceptions import ClientError
 
         if role is None:
             role = get_role()
 
-        # Check if there is already endpoint config, if so delete it or it will block deploy
         model_name = endpoint_name
         try:
             self._sm_client.delete_model(ModelName=model_name)
         except ClientError as e:
-            if e.response["Error"]["Code"] != "ValidationException":
-                raise
+            pass
 
-        create_model_args = {
-            "ModelName": model_name,
-            "ExecutionRoleArn": role,
-            "Containers": [
-                {
-                    "ModelPackageName": arn,
-                }
-            ],
-        }
-        _ = self._sm_client.create_model(**create_model_args)
+        # Create model
+        self._sm_client.create_model(
+            ModelName=model_name,
+            ExecutionRoleArn=role,
+            Containers=[{"ModelPackageName": arn}],
+        )
         self._model_name = model_name
 
         # Delete existing endpoint configuration if it exists
         try:
             self._sm_client.delete_endpoint_config(EndpointConfigName=endpoint_name)
-        except ClientError as e:
-            if e.response["Error"]["Code"] != "ValidationException":
-                raise
+        except ClientError:
+            pass
 
         # Check if the endpoint already exists
         if self._does_endpoint_exist(endpoint_name):
@@ -144,7 +144,6 @@ class Client:
                 "S3OutputPath": s3_output_path,
             }
         }
-
         if success_topic or error_topic:
             async_inference_config["OutputConfig"]["NotificationConfig"] = {}
             if success_topic:
@@ -156,7 +155,7 @@ class Client:
                     "ErrorTopic"
                 ] = error_topic
 
-        _ = self._sm_client.create_endpoint_config(
+        self._sm_client.create_endpoint_config(
             EndpointConfigName=endpoint_name,
             ProductionVariants=[
                 {
@@ -170,13 +169,33 @@ class Client:
         )
         self._endpoint_config_name = endpoint_name
 
-        _ = self._sm_client.create_endpoint(
+        self._sm_client.create_endpoint(
             EndpointName=endpoint_name,
             EndpointConfigName=endpoint_name,
         )
 
-        # Connect to the new endpoint
-        self.connect_to_endpoint(endpoint_name, model_name)
+        # Wait for the endpoint to become "InService" if `wait` is True
+        if wait:
+            print(f"Waiting for endpoint {endpoint_name} to be InService...")
+            start_time = time.time()
+            while True:
+                response = self._sm_client.describe_endpoint(EndpointName=endpoint_name)
+                status = response["EndpointStatus"]
+
+                if status == "InService":
+                    print(f"Async endpoint {endpoint_name} is now InService.")
+                    break
+                elif status in ["Failed", "RollingBack"]:
+                    raise Exception(f"Endpoint creation failed with status: {status}")
+
+                elapsed_time = time.time() - start_time
+                if elapsed_time > timeout:
+                    raise TimeoutError(f"Endpoint {endpoint_name} creation timed out.")
+
+                print(f"Endpoint {endpoint_name} status: {status}. Waiting...")
+                time.sleep(poll_interval)
+
+        self.connect_to_endpoint(endpoint_name, arn)
 
     def create_endpoint(
         self,
