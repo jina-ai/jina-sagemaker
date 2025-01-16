@@ -34,6 +34,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -761,4 +762,24 @@
 ### 🍹 Other Improvements
 
  - [[```dbbf2e0a```](https://github.com/jina-ai/jina-sagemaker/commit/dbbf2e0ae5a6633f134ea5cedfc299739e79c01b)] __-__ __version__: the next version will be 0.0.37 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-38></a>
+## Release Note (`0.0.38`)
+
+> Release time: 2025-01-16 07:39:45
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```efffff7b```](https://github.com/jina-ai/jina-sagemaker/commit/efffff7b474806deecdb904e7bdbe6bdd84ac2bb)] __-__ also set endpoint config in create endpoint api (*Zac Li*)
+ - [[```5e898405```](https://github.com/jina-ai/jina-sagemaker/commit/5e8984054ec2d299173c9be1f9f29111cb6f9960)] __-__ remove print (*Zac Li*)
+
+### 🍹 Other Improvements
+
+ - [[```05267850```](https://github.com/jina-ai/jina-sagemaker/commit/05267850e0e4f3dff17a3b2643a31c81a1fd77d6)] __-__ __version__: the next version will be 0.0.38 (*Jina Dev Bot*)
 
