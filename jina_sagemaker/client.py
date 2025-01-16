@@ -242,6 +242,7 @@ class Client:
         except ParamValidationError:
             model.deploy(n_instances, instance_type, endpoint_name=endpoint_name)
 
+        self._endpoint_config_name = endpoint_name
         self.connect_to_endpoint(endpoint_name, arn)
 
     def register_scalable_target(self, max_capacity, min_capacity=1):
