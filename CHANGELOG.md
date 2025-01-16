@@ -32,6 +32,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -705,4 +706,34 @@
 ### 🍹 Other Improvements
 
  - [[```4ad0f909```](https://github.com/jina-ai/jina-sagemaker/commit/4ad0f90933f40dc8e8542e74703a373d7f8a6ea1)] __-__ __version__: the next version will be 0.0.35 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-36></a>
+## Release Note (`0.0.36`)
+
+> Release time: 2025-01-16 05:54:32
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```b76c8e8a```](https://github.com/jina-ai/jina-sagemaker/commit/b76c8e8aa6ef48a72f490af72e521cc4148a5e69)] __-__ support async endpoint (*Zac Li*)
+
+### 🐞 Bug fixes
+
+ - [[```b862214e```](https://github.com/jina-ai/jina-sagemaker/commit/b862214e7e6e427a7fbf4ff0f1140fc9166f3b59)] __-__ rebase issue (*Zac Li*)
+
+### 📗 Documentation
+
+ - [[```b01a4dae```](https://github.com/jina-ai/jina-sagemaker/commit/b01a4dae16b050343d0cb5c593694c8329e7c866)] __-__ reader lm doc fix (*Zac Li*)
+ - [[```d1444941```](https://github.com/jina-ai/jina-sagemaker/commit/d1444941a0d04bfc37bae8590d7250663bc27f2d)] __-__ reader lm doc simplication (*Zac Li*)
+ - [[```c568ed26```](https://github.com/jina-ai/jina-sagemaker/commit/c568ed26deeed4ce626c8c8cefd0ff68fb60967e)] __-__ add batch output example for reader-lm-v2 (*Zac Li*)
+ - [[```caab84ac```](https://github.com/jina-ai/jina-sagemaker/commit/caab84acc7e9cd97f1fdde2db511c1d884515f3b)] __-__ reader lm v2 examples update (*Zac Li*)
+
+### 🍹 Other Improvements
+
+ - [[```2cba20d9```](https://github.com/jina-ai/jina-sagemaker/commit/2cba20d96ade40cad3677776eedae109d34c4090)] __-__ __version__: the next version will be 0.0.36 (*Jina Dev Bot*)
 
