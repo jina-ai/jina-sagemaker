@@ -33,6 +33,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -736,4 +737,28 @@
 ### 🍹 Other Improvements
 
  - [[```2cba20d9```](https://github.com/jina-ai/jina-sagemaker/commit/2cba20d96ade40cad3677776eedae109d34c4090)] __-__ __version__: the next version will be 0.0.36 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-37></a>
+## Release Note (`0.0.37`)
+
+> Release time: 2025-01-16 07:02:17
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```5d02f7bf```](https://github.com/jina-ai/jina-sagemaker/commit/5d02f7bf0be48f410bda09d2b733e1d17cc4e329)] __-__ async create fix (*Zac Li*)
+
+### 📗 Documentation
+
+ - [[```7c75e58b```](https://github.com/jina-ai/jina-sagemaker/commit/7c75e58b50208020912af9149d7f36bc02b27c26)] __-__ typo (*Zac Li*)
+ - [[```dfb1502a```](https://github.com/jina-ai/jina-sagemaker/commit/dfb1502a8f0ee636e237fddc427c1521bdcae81c)] __-__ use aysnc endpoint for notebook (*Zac Li*)
+
+### 🍹 Other Improvements
+
+ - [[```dbbf2e0a```](https://github.com/jina-ai/jina-sagemaker/commit/dbbf2e0ae5a6633f134ea5cedfc299739e79c01b)] __-__ __version__: the next version will be 0.0.37 (*Jina Dev Bot*)
 
