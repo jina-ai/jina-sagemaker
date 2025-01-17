@@ -11,6 +11,9 @@ from botocore.exceptions import ClientError, ParamValidationError
 
 from .helper import download_s3_folder, get_role, prefix_csv_with_ids
 
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
+
 
 class InputType(Enum):
     DOCUMENT = "document"
@@ -176,14 +179,14 @@ class Client:
 
         # Wait for the endpoint to become "InService" if `wait` is True
         if wait:
-            print(f"Waiting for endpoint {endpoint_name} to be InService...")
+            log.info(f"Waiting for endpoint {endpoint_name} to be InService...")
             start_time = time.time()
             while True:
                 response = self._sm_client.describe_endpoint(EndpointName=endpoint_name)
                 status = response["EndpointStatus"]
 
                 if status == "InService":
-                    print(f"Async endpoint {endpoint_name} is now InService.")
+                    log.info(f"Async endpoint {endpoint_name} is now InService.")
                     break
                 elif status in ["Failed", "RollingBack"]:
                     raise Exception(f"Endpoint creation failed with status: {status}")
@@ -192,7 +195,7 @@ class Client:
                 if elapsed_time > timeout:
                     raise TimeoutError(f"Endpoint {endpoint_name} creation timed out.")
 
-                print(f"Endpoint {endpoint_name} status: {status}. Waiting...")
+                log.info(f"Endpoint {endpoint_name} status: {status}. Waiting...")
                 time.sleep(poll_interval)
 
         self.connect_to_endpoint(endpoint_name, arn)
@@ -308,10 +311,10 @@ class Client:
             s3_input_path = self._sm_session.upload_data(
                 path=csv_path_with_ids, key_prefix=f"input/{uid}"
             )
-            print(f"Input file uploaded to {s3_input_path}.")
+            log.info(f"Input file uploaded to {s3_input_path}.")
         else:
             s3_input_path = input_path
-            print(f"Input file is already on S3, using {s3_input_path}.")
+            log.info(f"Input file is already on S3, using {s3_input_path}.")
 
         download_output_path = None
         # if output path is a local path, change to default s3 bucket,
@@ -348,7 +351,7 @@ class Client:
                 path=output_path,
                 local_dir=download_output_path,
             )
-            print(f"Output downloaded to {download_output_path}.")
+            log.info(f"Output downloaded to {download_output_path}.")
 
         job_name = None
         if transformer.latest_transform_job is not None:
@@ -563,9 +566,9 @@ class Client:
         # Delete the endpoint
         try:
             self._sm_client.delete_endpoint(EndpointName=self._endpoint_name)
-            print(f"Deleted endpoint: {self._endpoint_name}")
+            log.info(f"Deleted endpoint: {self._endpoint_name}")
         except ClientError:
-            print(f"Endpoint '{self._endpoint_name}' not found, skipping deletion.")
+            log.info(f"Endpoint '{self._endpoint_name}' not found, skipping deletion.")
 
         # Delete the endpoint configuration
         if self._endpoint_config_name is not None:
@@ -573,9 +576,11 @@ class Client:
                 self._sm_client.delete_endpoint_config(
                     EndpointConfigName=self._endpoint_config_name
                 )
-                print(f"Deleted endpoint configuration: {self._endpoint_config_name}")
+                log.info(
+                    f"Deleted endpoint configuration: {self._endpoint_config_name}"
+                )
             except ClientError:
-                print(
+                log.info(
                     f"Endpoint configuration '{self._endpoint_config_name}' not found, skipping deletion."
                 )
 
@@ -583,16 +588,16 @@ class Client:
         if self._model_name is not None:
             try:
                 self._sm_client.delete_model(ModelName=self._model_name)
-                print(f"Deleted model: {self._model_name}")
+                log.info(f"Deleted model: {self._model_name}")
             except ClientError:
-                print(f"Model '{self._model_name}' not found, skipping deletion.")
+                log.info(f"Model '{self._model_name}' not found, skipping deletion.")
 
     def close(self) -> None:
         try:
             self._sm_runtime_client.close()
             self._sm_client.close()
         except AttributeError:
-            print(
+            log.info(
                 "SageMaker client could not be closed. "
                 "This might be because you are using an old version of SageMaker."
             )
