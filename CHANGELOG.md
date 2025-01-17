@@ -35,6 +35,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -782,4 +783,27 @@
 ### 🍹 Other Improvements
 
  - [[```05267850```](https://github.com/jina-ai/jina-sagemaker/commit/05267850e0e4f3dff17a3b2643a31c81a1fd77d6)] __-__ __version__: the next version will be 0.0.38 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-39></a>
+## Release Note (`0.0.39`)
+
+> Release time: 2025-01-17 07:18:34
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```2064cf8c```](https://github.com/jina-ai/jina-sagemaker/commit/2064cf8c7a98a693544c0a7940000ee4c773cee9)] __-__ remove client args from sagemaker.Session in class init (*Zac Li*)
+
+### 📗 Documentation
+
+ - [[```96c32644```](https://github.com/jina-ai/jina-sagemaker/commit/96c32644d38bbd5035dc2392afe36ce57b4b75b7)] __-__ more notes (*Zac Li*)
+
+### 🍹 Other Improvements
+
+ - [[```d5318174```](https://github.com/jina-ai/jina-sagemaker/commit/d5318174f50fa7f226ef92b29654152c7547442a)] __-__ __version__: the next version will be 0.0.39 (*Jina Dev Bot*)
 
