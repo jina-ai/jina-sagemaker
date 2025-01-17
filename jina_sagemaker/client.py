@@ -44,7 +44,7 @@ class Client:
         self._sm_runtime_client = boto3.client("sagemaker-runtime", **client_args)
         self._sm_client = boto3.client("sagemaker", **client_args)
         self._sm_session = sagemaker.Session(
-            boto_session=boto3.Session(**client_args),
+            boto_session=boto3.Session(),
             sagemaker_client=self._sm_client,
         )
         self._aas_client = boto3.client("application-autoscaling", **client_args)
