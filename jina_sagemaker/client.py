@@ -32,13 +32,9 @@ class Client:
     def __init__(
         self,
         region_name: Optional[str] = None,
-        verbose=False,
         client_args: Optional[dict] = None,
     ):
         import sagemaker
-
-        if not verbose:
-            logging.getLogger("sagemaker.config").setLevel(logging.WARNING)
 
         client_args = client_args or {}
         if region_name:
