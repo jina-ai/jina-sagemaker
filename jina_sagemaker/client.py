@@ -363,8 +363,6 @@ class Client:
             input_s3_path (str): S3 path where the input data will be uploaded.
             output_s3_path (str): S3 path where the output data will be stored.
 
-        Returns:
-            dict: A response containing the output location and other metadata.
         """
         if self._endpoint_name is None:
             raise Exception("No endpoint connected. Run connect_to_endpoint() first.")
@@ -401,6 +399,15 @@ class Client:
         }
 
     def read(self, prompt: str, stream: bool = False):
+        """
+        Send a request to a ReaderLM and process the response.
+
+        Args:
+            prompt (str): The input prompt for the model.
+            stream (bool, optional): Flag indicating whether the response should be
+                processed as a stream. Defaults to False.
+
+        """
         if self._endpoint_name is None:
             raise Exception(
                 "No endpoint connected. " "Run connect_to_endpoint() first."
