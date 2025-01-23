@@ -426,8 +426,25 @@ class Client:
             Body=data,
         )
 
-        resp = json.loads(response["Body"].read().decode())
-        return resp
+        if stream:
+            response_body = response["Body"]
+            streamed_results = []
+
+            for line in response_body.iter_lines():
+                if line:
+                    decoded_line = line.decode("utf-8").strip()
+                    if decoded_line.startswith("data:"):  # Handle 'data:' prefix
+                        json_data = decoded_line[5:].strip()
+                        try:
+                            streamed_results.append(json.loads(json_data))
+                        except json.JSONDecodeError:
+                            pass
+
+            return streamed_results
+        else:
+            # For non-streamed responses, read the entire body
+            response_body = response["Body"].read().decode()
+            return json.loads(response_body)
 
     def embed(
         self,
