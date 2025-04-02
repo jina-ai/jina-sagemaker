@@ -547,29 +547,39 @@ class Client:
         resp = json.loads(response["Body"].read().decode())
         return resp["data"]
 
-    def rerank(self, documents: List[str], query: str, top_n: Optional[int] = None):
+    def rerank(
+        self, documents: List[Union[str, dict]], query: str, top_n: Optional[int] = None
+    ):
         if self._endpoint_name is None:
-            raise Exception(
-                "No endpoint connected. " "Run connect_to_endpoint() first."
-            )
+            raise Exception("No endpoint connected. Run connect_to_endpoint() first.")
 
-        payload = {
-            "data": {
-                "documents": [{"text": document} for document in documents],
-                "query": query,
-            }
+        # Normalize input into list of dicts
+        normalized_documents = []
+        for doc in documents:
+            if isinstance(doc, str):
+                normalized_documents.append({"text": doc})
+            elif isinstance(doc, dict):
+                normalized_documents.append(doc)
+            else:
+                raise ValueError(f"Unsupported document type: {type(doc)}")
+
+        data = {
+            "documents": normalized_documents,
+            "query": query,
         }
-        if top_n:
-            payload["data"]["top_n"] = (
-                top_n if top_n < len(documents) else len(documents)
-            )
 
-        data = json.dumps(payload)
+        if top_n:
+            data["top_n"] = min(top_n, len(normalized_documents))
+
+        if "jina-reranker-v3" in self._arn:
+            payload = json.dumps({"data": [data]})
+        else:
+            payload = json.dumps({"data": data})
 
         response = self._sm_runtime_client.invoke_endpoint(
             EndpointName=self._endpoint_name,
             ContentType="application/json",
-            Body=data,
+            Body=payload,
         )
 
         resp = json.loads(response["Body"].read().decode())
