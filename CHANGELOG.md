@@ -40,6 +40,7 @@
 
 
 
+
 <a name=release-note-0-0-2></a>
 ## Release Note (`0.0.2`)
 
@@ -892,4 +893,23 @@
 ### 🍹 Other Improvements
 
  - [[```52d09beb```](https://github.com/jina-ai/jina-sagemaker/commit/52d09beb6b454436d70baae038566f90457434bb)] __-__ __version__: the next version will be 0.0.43 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-44></a>
+## Release Note (`0.0.44`)
+
+> Release time: 2025-04-03 02:49:33
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zac Li,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```becf2ce9```](https://github.com/jina-ai/jina-sagemaker/commit/becf2ce9c0c6a4b91ac40db64b271974b22ee6f1)] __-__ model name update (*Zac Li*)
+
+### 🍹 Other Improvements
+
+ - [[```aa04af0c```](https://github.com/jina-ai/jina-sagemaker/commit/aa04af0c4cc89e566aa39935707b273d6acd6182)] __-__ __version__: the next version will be 0.0.44 (*Jina Dev Bot*)
 
