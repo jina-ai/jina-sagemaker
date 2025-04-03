@@ -571,7 +571,7 @@ class Client:
         if top_n:
             data["top_n"] = min(top_n, len(normalized_documents))
 
-        if "jina-reranker-v3" in self._arn:
+        if "jina-reranker-m0" in self._arn:
             payload = json.dumps({"data": [data]})
         else:
             payload = json.dumps({"data": data})
