@@ -1,0 +1,116 @@
+{
+    "data": [
+      {
+        "data": [
+          {
+            "query_usage": {
+              "total_tokens": 0
+            },
+            "docs_usage": {
+              "total_tokens": 51
+            },
+            "results": [
+              {
+                "index": 0,
+                "document": {
+                  "text": "the dog is in my house",
+                  "url": null,
+                  "bytes": null,
+                  "image": null
+                },
+                "relevance_score": 0.9277517613293448,
+                "usage": {
+                  "total_tokens": 19
+                }
+              },
+              {
+                "index": 1,
+                "document": {
+                  "text": "the cat looks good",
+                  "url": null,
+                  "bytes": null,
+                  "image": null
+                },
+                "relevance_score": 0.8961859749432902,
+                "usage": {
+                  "total_tokens": 17
+                }
+              },
+              {
+                "index": 2,
+                "document": {
+                  "text": "fish chips",
+                  "url": null,
+                  "bytes": null,
+                  "image": null
+                },
+                "relevance_score": 0.8817860281543185,
+                "usage": {
+                  "total_tokens": 15
+                }
+              }
+            ]
+          }
+        ],
+        "header": null,
+        "parameters": null
+      },
+      {
+        "data": [
+          {
+            "query_usage": {
+              "total_tokens": 0
+            },
+            "docs_usage": {
+              "total_tokens": 49
+            },
+            "results": [
+              {
+                "index": 1,
+                "document": {
+                  "text": "yes I do like cat",
+                  "url": null,
+                  "bytes": null,
+                  "image": null
+                },
+                "relevance_score": 0.9613600579767368,
+                "usage": {
+                  "total_tokens": 18
+                }
+              },
+              {
+                "index": 2,
+                "document": {
+                  "text": "morning",
+                  "url": null,
+                  "bytes": null,
+                  "image": null
+                },
+                "relevance_score": 0.8917808904632609,
+                "usage": {
+                  "total_tokens": 15
+                }
+              },
+              {
+                "index": 0,
+                "document": {
+                  "text": "cash is king",
+                  "url": null,
+                  "bytes": null,
+                  "image": null
+                },
+                "relevance_score": 0.8759908182286018,
+                "usage": {
+                  "total_tokens": 16
+                }
+              }
+            ]
+          }
+        ],
+        "header": null,
+        "parameters": null
+      }
+    ],
+    "errors": []
+  }
+  
