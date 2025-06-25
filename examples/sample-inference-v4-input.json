@@ -1,0 +1,31 @@
+{
+  "data": [
+    {
+      "text": "A beautiful sunset over the beach"
+    },
+    {
+      "text": "Un beau coucher de soleil sur la plage"
+    },
+    {
+      "text": "海滩上美丽的日落"
+    },
+    {
+      "text": "浜辺に沈む美しい夕日"
+    },
+    {
+      "image": "https://i.ibb.co/nQNGqL0/beach1.jpg"
+    },
+    {
+      "image": "https://i.ibb.co/r5w8hG8/beach2.jpg"
+    },
+    {
+      "image": "iVBORw0KGgoAAAANSUhEUgAAABwAAAA4CAIAAABhUg/jAAAAMklEQVR4nO3MQREAMAgAoLkoFreTiSzhy4MARGe9bX99lEqlUqlUKpVKpVKpVCqVHksHaBwCA2cPf0cAAAAASUVORK5CYII="
+    }
+  ],
+  "parameters": {
+    "task": "text-matching",
+    "late_chunking": false,
+    "dimensions": 1024,
+    "return_multivector": false
+  }
+}
