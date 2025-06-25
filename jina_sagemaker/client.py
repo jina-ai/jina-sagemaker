@@ -458,11 +458,13 @@ class Client:
         texts: Optional[Union[str, List[str]]] = None,
         image_urls: Optional[Union[str, List[str]]] = None,
         image_bytes: Optional[Union[str, List[str]]] = None,
+        pdf_url: Optional[str] = False,
         use_colbert: Optional[bool] = False,
         input_type: Optional[InputType] = InputType.DOCUMENT,
         task_type: Optional[Task] = None,
         dimensions: Optional[int] = None,
         late_chunking: Optional[bool] = False,
+        return_multivector: Optional[bool] = False,
     ):
         """
         Embeds the given texts.
@@ -474,12 +476,14 @@ class Client:
             URL or a list of URLs.
             - image_bytes (Optional[Union[str, List[str]]]): Bytes of the images to embed. Can be a single
             byte string or a list of byte strings.
+            - pdf_url (Optional[str]): URLs of the PDF to embed. PDF cannot be mixed with other media types.
             - use_colbert (bool, optional): A flag indicating ColBERT model is used for embedding.
             - input_type (InputType, optional): The type of input texts, indicating whether
             they should be treated as documents or queries. This is only needed when use_colbert is True.
             - task_type (Task, optional): Select the downstream task for which the embeddings will be used. The model will return the optimized embeddings for that task. None meaning no specific task is needed.
             - dimensions (Optional[int], optional): Output dimensions. Smaller dimensions are easier to store and retrieve, with minimal performance impact thanks to MRL.
             - late_chunking (Optional[bool], optional): Apply the late chunking technique to leverage the model's long-context capabilities for generating contextual chunk embeddings.
+            - return_multivector (Optional[bool], optional): Whether to return multi vector output.
         """
 
         if self._endpoint_name is None:
@@ -488,40 +492,47 @@ class Client:
             )
 
         if not use_colbert:
+            data = {"data": []}
+            if "jina-embeddings-v3" in self._arn or "jina-embeddings-v4" in self._arn:
+                data["parameters"] = {
+                    "task": task_type.value if task_type else "text-matching",
+                    "dimensions": dimensions,
+                    "late_chunking": late_chunking,
+                }
+                if "jina-embeddings-v4" in self._arn:
+                    data["parameters"]["return_multivector"] = return_multivector
+            elif "jina-clip-v2" in self._arn:
+                data["parameters"] = {
+                    "task": task_type.value if task_type else "text-matching",
+                    "dimensions": dimensions,
+                }
+
             if texts:
                 if isinstance(texts, str):
-                    data = {"data": {"text": texts}}
+                    data["data"] += [{"text": texts}]
                 else:
-                    data = {"data": [{"text": text} for text in texts]}
-
-                if "jina-embeddings-v3" in self._arn:
-                    data["parameters"] = {
-                        "task": task_type.value if task_type else None,
-                        "dimensions": dimensions,
-                        "late_chunking": late_chunking,
-                    }
-                elif "jina-clip-v2" in self._arn:
-                    data["parameters"] = {
-                        "task": task_type.value if task_type else None,
-                        "dimensions": dimensions,
-                    }
-
-                data = json.dumps(data)
+                    data["data"] += [{"text": text} for text in texts]
 
             if image_urls:
+                key = "url" if "jina-clip-v2" in self._arn else "image"
                 if isinstance(image_urls, str):
-                    data = json.dumps({"data": {"url": image_urls}})
+                    data["data"] += [{key: image_urls}]
                 else:
-                    data = json.dumps(
-                        {"data": [{"url": image_url} for image_url in image_urls]}
-                    )
+                    data["data"] += [{key: image_url} for image_url in image_urls]
+
             if image_bytes:
+                key = "bytes" if "jina-clip-v2" in self._arn else "image"
                 if isinstance(image_bytes, str):
-                    data = json.dumps({"data": {"bytes": image_bytes}})
+                    data["data"] += [{key: image_bytes}]
                 else:
-                    data = json.dumps(
-                        {"data": [{"bytes": image_byte} for image_byte in image_bytes]}
-                    )
+                    data["data"] += [
+                        {key: image_bytes_item} for image_bytes_item in image_bytes
+                    ]
+
+            if "jina-embeddings-v4" in self._arn and pdf_url:
+                data["data"] = {"pdf": pdf_url}
+
+            data = json.dumps(data)
         else:
             if isinstance(texts, str):
                 data = json.dumps(

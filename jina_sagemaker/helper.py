@@ -19,8 +19,8 @@ def prefix_csv_with_ids(input_path: str) -> str:
     with open(input_path, mode="r", encoding="utf-8") as infile, open(
         output_path, mode="w", newline="", encoding="utf-8"
     ) as outfile:
-        reader = csv.reader(infile, quoting=csv.QUOTE_NONE, escapechar="\\")
-        writer = csv.writer(outfile, quoting=csv.QUOTE_NONE, escapechar="\\")
+        reader = csv.reader(infile, quoting=csv.QUOTE_ALL)
+        writer = csv.writer(outfile, quoting=csv.QUOTE_ALL)
 
         first_row = next(reader, None)
         if first_row is None:
