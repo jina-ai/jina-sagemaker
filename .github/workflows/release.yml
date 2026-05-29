@@ -1,50 +1,70 @@
-name: Manual Release
+name: Release
 
 on:
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
     inputs:
-      release_token:
-        description: 'Your release token'
-        required: true
-      release_reason:
-        description: 'Short reason for this manual release'
+      tag:
+        description: 'Tag to release (must already exist, e.g. v0.0.47)'
         required: true
 
 jobs:
-  token-check:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-script@v3
+      - uses: actions/checkout@v4
         with:
-          script: |
-            core.setFailed('token are not equivalent!')
-        if: github.event.inputs.release_token != env.release_token
-        env:
-          release_token: ${{ secrets.JINA_SAGEMAKER_RELEASE_TOKEN }}
+          ref: ${{ github.event.inputs.tag || github.ref }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build sdist and wheel
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build
+      - name: Upload built artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
 
-  regular-release:
-    needs: token-check
+  publish:
+    needs: build
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/jina-sagemaker/
+    permissions:
+      id-token: write
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v4
         with:
-          fetch-depth: 100  # means max contribute history is limited to 100 lines
-      - uses: actions/setup-python@v2
+          name: dist
+          path: dist/
+      - name: Publish to PyPI via Trusted Publishing
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  github-release:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
         with:
-          python-version: '3.10'
-      - run: |
-          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-          npm install git-release-notes
-          pip install twine wheel
-          ./scripts/release.sh final "${{ github.event.inputs.release_reason }}" "${{github.actor}}"
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Create GitHub Release
         env:
-          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-      - if: failure()
-        run: echo "nothing to release"
-      - name: bumping master version
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.JINA_DEV_BOT }}
-          tags: true
-          branch: main
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.inputs.tag || github.ref_name }}
+        run: |
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --generate-notes \
+            dist/*

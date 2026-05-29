@@ -13,14 +13,23 @@
 
 ## Installation
 
-The package can be installed with pip:
+Install from PyPI:
+
 ```bash
 pip install --upgrade jina-sagemaker
 ```
 
 Install from source:
+
 ```bash
-python setup.py install
+pip install .
+```
+
+Build distributions locally:
+
+```bash
+pip install build
+python -m build
 ```
 
 ## Usage
@@ -29,3 +38,16 @@ Please configure your AWS credentials before using this package. You can do this
 
 Please follow the examples in `notebooks` to get an overview of how to use model packages offered for real time inference and batch transform jobs.
 
+## Development
+
+```bash
+pip install -e .[test]
+pytest
+```
+
+Formatting and linting use `black`, `isort`, and `flake8`; configuration lives in `pyproject.toml`. A pre-commit hook is provided:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
