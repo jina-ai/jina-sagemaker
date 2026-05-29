@@ -1,4 +1,6 @@
 {
+  // "data": Text or list of texts to embed. jina-embeddings-v5-text-small is
+  //         a text-only model (no image input). Required.
   "data": [
     "A beautiful sunset over the beach",
     "Un beau coucher de soleil sur la plage",
@@ -6,7 +8,34 @@
     "浜辺に沈む美しい夕日"
   ],
   "parameters": {
+    // "task": Task-specific LoRA adapter. One of:
+    //   - "retrieval.query"   : embed search queries in a query-document retrieval task
+    //   - "retrieval.passage" : embed documents to be retrieved in a query-document retrieval task
+    //   - "text-matching"     : semantic similarity, symmetric retrieval, recommendation, deduplication
+    //   - "clustering"        : grouping / separation of documents by topic
+    //   - "classification"    : embeddings optimized for text classification
+    //   Default: "text-matching".
     "task": "retrieval.query",
+
+    // "dimensions": Output embedding size. Smaller dimensions enable efficient
+    //   storage and retrieval with minimal quality loss via Matryoshka
+    //   Representation Learning. Range: 32 <= dimensions <= 1024. Default: 1024.
     "dimensions": 1024
+
+    // "normalized": L2-normalize embeddings to unit length (required for cosine
+    //   similarity via dot product). Boolean. Default: true.
+    // "normalized": true,
+
+    // "truncate": Automatically truncate inputs exceeding the model's maximum
+    //   context length (32,768 tokens) instead of returning an error.
+    //   Boolean. Default: false.
+    // "truncate": false,
+
+    // "embedding_type": Output encoding. "float" (default) or "base64" (compact
+    //   transmission). Default: "float".
+    // "embedding_type": "float",
+
+    // "model": Model identifier override. Default: "jina-embeddings-v5-text-small".
+    // "model": "jina-embeddings-v5-text-small"
   }
 }
