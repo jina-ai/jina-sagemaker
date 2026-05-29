@@ -30,6 +30,9 @@ dependencies = [
 [project.optional-dependencies]
 test = [
     "pytest>=7",
+    # Notebook-import sanity test in tests/test_notebooks.py parses the
+    # .ipynb files and verifies their jina_sagemaker imports resolve.
+    "nbformat>=5",
 ]
 
 [project.urls]
@@ -60,3 +63,8 @@ profile = "black"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# tests/integration/ talks to real SageMaker endpoints and is opt-in only.
+# Its conftest.py also skips every test unless RUN_INTEGRATION_TESTS=1,
+# but excluding it from default collection avoids printing a noisy
+# wall-of-skips during normal `pytest` runs.
+norecursedirs = ["tests/integration"]
