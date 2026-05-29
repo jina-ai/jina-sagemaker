@@ -1,0 +1,12 @@
+{
+  "data": [
+    "A beautiful sunset over the beach",
+    "Un beau coucher de soleil sur la plage",
+    "海滩上美丽的日落",
+    "浜辺に沈む美しい夕日"
+  ],
+  "parameters": {
+    "task": "retrieval.query",
+    "dimensions": 1024
+  }
+}
