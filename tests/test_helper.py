@@ -1,36 +1,62 @@
+import csv
 import os
 import tempfile
-
-import pytest
+import uuid
 
 from jina_sagemaker.helper import prefix_csv_with_ids
 
-SAMPLE_CSV_CONTENT = """How is the weather today?
+# Real 32-character hex UUIDs (no dashes) — uuid.UUID() accepts both forms.
+REAL_UUID_1 = "f47ac10b58cc4372a5670e02b2c3d479"
+REAL_UUID_2 = "550e8400e29b41d4a716446655440000"
+
+SAMPLE_CSV_NO_IDS = """How is the weather today?
 When are you open?"""
 
+SAMPLE_CSV_WITH_IDS = f"""{REAL_UUID_1},How is the weather today?
+{REAL_UUID_2},When are you open?"""
 
-SAMPLE_CSV_CONTENT_WITH_IDS = """a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6,How is the weather today?
-a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6,When are you open?"""
+
+def _read_rows(path):
+    with open(path, newline="") as f:
+        return list(csv.reader(f))
 
 
-@pytest.mark.parametrize("content", [SAMPLE_CSV_CONTENT, SAMPLE_CSV_CONTENT_WITH_IDS])
-def test_prefix_csv_with_ids(content):
-    with tempfile.NamedTemporaryFile(mode="wb", delete=False, suffix=".csv") as f:
-        input_file_name = f.name
-        f.write(content.encode("utf-8"))
+def test_prefix_csv_adds_uuid_when_missing():
+    with tempfile.NamedTemporaryFile(
+        mode="w", delete=False, suffix=".csv", encoding="utf-8"
+    ) as f:
+        f.write(SAMPLE_CSV_NO_IDS)
+        input_path = f.name
 
     try:
-        output_file_name = prefix_csv_with_ids(input_file_name)
+        output_path = prefix_csv_with_ids(input_path)
+        rows = _read_rows(output_path)
 
-        # Check the output
-        with open(output_file_name, "r") as f:
-            lines = f.readlines()
-            assert len(lines) == 2
-            for line in lines:
-                # Assert each line has a UUID, comma, and then content
-                assert len(line.split(",", 1)) == 2
-                assert len(line.split(",", 1)[0]) == 32
-
+        assert len(rows) == 2
+        for row in rows:
+            assert len(row) == 2
+            uuid.UUID(row[0])  # raises ValueError if not a valid UUID
     finally:
-        os.remove(input_file_name)
-        os.remove(output_file_name)
+        os.remove(input_path)
+        if os.path.exists(output_path):
+            os.remove(output_path)
+
+
+def test_prefix_csv_preserves_existing_uuids():
+    with tempfile.NamedTemporaryFile(
+        mode="w", delete=False, suffix=".csv", encoding="utf-8"
+    ) as f:
+        f.write(SAMPLE_CSV_WITH_IDS)
+        input_path = f.name
+
+    try:
+        output_path = prefix_csv_with_ids(input_path)
+        rows = _read_rows(output_path)
+
+        assert len(rows) == 2
+        assert rows[0][0] == REAL_UUID_1
+        assert rows[1][0] == REAL_UUID_2
+    finally:
+        os.remove(input_path)
+        if os.path.exists(output_path):
+            os.remove(output_path)

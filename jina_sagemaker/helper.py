@@ -16,9 +16,10 @@ def prefix_csv_with_ids(input_path: str) -> str:
     # output_path should be oldfilename_with_ids.csv
     output_path = input_path.replace(".csv", "_with_ids.csv")
 
-    with open(input_path, mode="r", encoding="utf-8") as infile, open(
-        output_path, mode="w", newline="", encoding="utf-8"
-    ) as outfile:
+    with (
+        open(input_path, mode="r", encoding="utf-8") as infile,
+        open(output_path, mode="w", newline="", encoding="utf-8") as outfile,
+    ):
         reader = csv.reader(infile, quoting=csv.QUOTE_ALL)
         writer = csv.writer(outfile, quoting=csv.QUOTE_ALL)
 

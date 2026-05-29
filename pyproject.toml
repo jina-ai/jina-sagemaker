@@ -1,0 +1,62 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "jina-sagemaker"
+dynamic = ["version"]
+description = "Python library for the Jina endpoints in AWS Sagemaker"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [{ name = "Jina AI", email = "hello@jina.ai" }]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "boto3>=1.34",
+    # sagemaker 3.x is a namespace package that drops the legacy top-level API
+    # (sagemaker.Session, sagemaker.ModelPackage, sagemaker.get_execution_role).
+    # Stay on the 2.x line until this library is ported to the new SDK.
+    "sagemaker>=2.200,<3",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7",
+]
+
+[project.urls]
+Homepage = "https://github.com/jina-ai/jina-sagemaker"
+Repository = "https://github.com/jina-ai/jina-sagemaker"
+Changelog = "https://github.com/jina-ai/jina-sagemaker/releases"
+
+[tool.hatch.version]
+path = "jina_sagemaker/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/jina_sagemaker",
+    "/README.md",
+    "/LICENSE",
+    "/CHANGELOG.md",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["jina_sagemaker"]
+
+[tool.black]
+skip-string-normalization = true
+target-version = ["py310", "py311", "py312", "py313"]
+
+[tool.isort]
+profile = "black"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
