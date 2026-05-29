@@ -70,22 +70,29 @@ def download_s3_folder(
             is written to ``<local_dir>/<key-relative-to-prefix>``; when
             ``None`` the object key itself is used verbatim as the path
             (preserving the original behaviour of this helper).
-        max_workers: Upper bound on concurrent ``Bucket.download_file``
-            calls. Capped to the actual object count so we don't spawn
+        max_workers: Upper bound on concurrent ``S3.Client.download_file``
+            calls. Capped to the actual object count so we do not spawn
             extra threads for tiny folders.
 
     Re-raises the first exception any worker thread encounters so partial
     failures surface as a single clean error to the caller, rather than a
     half-downloaded folder with no signal.
+
+    Threading note: the low-level boto3 ``s3`` client is documented as
+    thread-safe and is used for the worker downloads. boto3 *resources*
+    (``boto3.resource("s3")``) are NOT thread-safe and are confined to
+    the serial listing pass.
     """
     bucket_name, s3_folder = path.replace("s3://", "").split("/", 1)
-    s3 = boto3.resource("s3")
-    bucket = s3.Bucket(bucket_name)
 
-    # Pass 1: enumerate the listing serially and create target directories.
-    # Directory creation runs serially because parallel makedirs() against
-    # a shared parent races; the listing+mkdir cost is negligible compared
-    # to the downloads themselves.
+    # Pass 1: enumerate the listing serially via the resource API (handy
+    # paginated iterator) and create target directories. Directory
+    # creation runs serially because parallel makedirs() against a shared
+    # parent races; the listing + mkdir cost is negligible compared to
+    # the downloads themselves.
+    s3_resource = boto3.resource("s3")
+    bucket = s3_resource.Bucket(bucket_name)
+
     tasks = []
     for obj in bucket.objects.filter(Prefix=s3_folder):
         if obj.key.endswith("/"):
@@ -103,12 +110,14 @@ def download_s3_folder(
     if not tasks:
         return
 
-    # Pass 2: parallel downloads. ThreadPoolExecutor is the right choice
-    # here — download_file releases the GIL while waiting on socket I/O,
-    # so thread-level parallelism translates directly into bandwidth.
+    # Pass 2: parallel downloads through the low-level client. boto3
+    # clients are thread-safe (per the boto3 docs); resources are not,
+    # which is why we don't reuse ``bucket.download_file`` here.
+    s3_client = boto3.client("s3")
     with ThreadPoolExecutor(max_workers=min(max_workers, len(tasks))) as pool:
         futures = [
-            pool.submit(bucket.download_file, key, target) for key, target in tasks
+            pool.submit(s3_client.download_file, bucket_name, key, target)
+            for key, target in tasks
         ]
         for fut in as_completed(futures):
             fut.result()
