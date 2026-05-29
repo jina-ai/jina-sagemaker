@@ -58,6 +58,30 @@ def test_prefix_csv_raises_on_empty_input():
         os.remove(input_path)
 
 
+def test_prefix_csv_handles_blank_leading_line():
+    """A CSV whose first line is blank must NOT crash on first_row[0]."""
+    with tempfile.NamedTemporaryFile(
+        mode="w", delete=False, suffix=".csv", encoding="utf-8"
+    ) as f:
+        f.write("\nHow is the weather today?\nWhen are you open?\n")
+        input_path = f.name
+
+    try:
+        output_path = prefix_csv_with_ids(input_path)
+        rows = _read_rows(output_path)
+
+        # The blank leading line is dropped by csv.reader; every remaining
+        # row gets a fresh UUID prefix.
+        assert len(rows) >= 2
+        for row in rows:
+            if row:  # ignore any blank rows the reader emits
+                uuid.UUID(row[0])
+    finally:
+        os.remove(input_path)
+        if "output_path" in dir() and os.path.exists(output_path):
+            os.remove(output_path)
+
+
 def test_prefix_csv_preserves_existing_uuids():
     with tempfile.NamedTemporaryFile(
         mode="w", delete=False, suffix=".csv", encoding="utf-8"
