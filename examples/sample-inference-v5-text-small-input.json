@@ -33,9 +33,6 @@
 
     // "embedding_type": Output encoding. "float" (default) or "base64" (compact
     //   transmission). Default: "float".
-    // "embedding_type": "float",
-
-    // "model": Model identifier override. Default: "jina-embeddings-v5-text-small".
-    // "model": "jina-embeddings-v5-text-small"
+    // "embedding_type": "float"
   }
 }
