@@ -80,9 +80,7 @@ _DETECTION_TABLE: List[Tuple[str, ModelSpec]] = [
 # Accepts the canonical ``ModelSpec.name`` as an explicit override when the
 # caller passes ``model=`` to ``connect_to_endpoint`` / ``create_endpoint`` /
 # ``create_async_endpoint``. The override path skips ARN detection entirely.
-_OVERRIDE_TABLE: Dict[str, ModelSpec] = {
-    spec.name: spec for _, spec in _DETECTION_TABLE
-}
+_OVERRIDE_TABLE: Dict[str, ModelSpec] = {spec.name: spec for _, spec in _DETECTION_TABLE}
 
 
 def _resolve_model(arn: str, override: Optional[str] = None) -> ModelSpec:
@@ -101,9 +99,7 @@ def _resolve_model(arn: str, override: Optional[str] = None) -> ModelSpec:
     if override is not None:
         if override not in _OVERRIDE_TABLE:
             known = sorted(_OVERRIDE_TABLE)
-            raise ValueError(
-                f"Unknown model override {override!r}. Known values: {known}"
-            )
+            raise ValueError(f"Unknown model override {override!r}. Known values: {known}")
         return _OVERRIDE_TABLE[override]
 
     for slug, spec in _DETECTION_TABLE:
@@ -182,9 +178,7 @@ class Client:
             raise Exception(f"Endpoint {endpoint_name} does not exist.")
         self._endpoint_name = endpoint_name
         self._variant_name = "AllTraffic"
-        self._resource_id = "endpoint/{}/variant/{}".format(
-            self._endpoint_name, self._variant_name
-        )
+        self._resource_id = "endpoint/{}/variant/{}".format(self._endpoint_name, self._variant_name)
         self._arn = arn
         self._model_spec = _resolve_model(arn, override=model)
 
@@ -251,9 +245,7 @@ class Client:
                 self.connect_to_endpoint(endpoint_name, arn, model=model)
                 self.delete_endpoint()
             else:
-                raise Exception(
-                    f"Endpoint {endpoint_name} already exists and recreate={recreate}."
-                )
+                raise Exception(f"Endpoint {endpoint_name} already exists and recreate={recreate}.")
 
         async_inference_config: Dict = {
             "OutputConfig": {
@@ -263,13 +255,9 @@ class Client:
         if success_topic or error_topic:
             async_inference_config["OutputConfig"]["NotificationConfig"] = {}
             if success_topic:
-                async_inference_config["OutputConfig"]["NotificationConfig"][
-                    "SuccessTopic"
-                ] = success_topic
+                async_inference_config["OutputConfig"]["NotificationConfig"]["SuccessTopic"] = success_topic
             if error_topic:
-                async_inference_config["OutputConfig"]["NotificationConfig"][
-                    "ErrorTopic"
-                ] = error_topic
+                async_inference_config["OutputConfig"]["NotificationConfig"]["ErrorTopic"] = error_topic
 
         self._sm_client.create_endpoint_config(
             EndpointConfigName=endpoint_name,
@@ -333,9 +321,7 @@ class Client:
                 self.connect_to_endpoint(endpoint_name, arn, model=model)
                 self.delete_endpoint()
             else:
-                raise Exception(
-                    f"Endpoint {endpoint_name} already exists and recreate={recreate}."
-                )
+                raise Exception(f"Endpoint {endpoint_name} already exists and recreate={recreate}.")
 
         try:
             self._sm_client.delete_endpoint_config(EndpointConfigName=endpoint_name)
@@ -427,9 +413,7 @@ class Client:
             if not os.path.exists(input_path):
                 raise FileNotFoundError(f"Input path {input_path} does not exist.")
             csv_path_with_ids = prefix_csv_with_ids(input_path=input_path)
-            s3_input_path = self._sm_session.upload_data(
-                path=csv_path_with_ids, key_prefix=f"input/{uid}"
-            )
+            s3_input_path = self._sm_session.upload_data(path=csv_path_with_ids, key_prefix=f"input/{uid}")
             log.info(f"Input file uploaded to {s3_input_path}.")
         else:
             s3_input_path = input_path
@@ -716,17 +700,10 @@ class Client:
 
         if self._endpoint_config_name is not None:
             try:
-                self._sm_client.delete_endpoint_config(
-                    EndpointConfigName=self._endpoint_config_name
-                )
-                log.info(
-                    f"Deleted endpoint configuration: {self._endpoint_config_name}"
-                )
+                self._sm_client.delete_endpoint_config(EndpointConfigName=self._endpoint_config_name)
+                log.info(f"Deleted endpoint configuration: {self._endpoint_config_name}")
             except ClientError:
-                log.info(
-                    f"Endpoint configuration '{self._endpoint_config_name}' "
-                    "not found, skipping deletion."
-                )
+                log.info(f"Endpoint configuration '{self._endpoint_config_name}' not found, skipping deletion.")
 
         if self._model_name is not None:
             try:

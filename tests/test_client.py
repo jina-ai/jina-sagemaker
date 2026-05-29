@@ -167,9 +167,7 @@ def test_embed_no_endpoint_raises(client):
 
 def test_embed_v3_text_default_task(client):
     _connect(client, ARN_V3)
-    response_body = _json_streaming(
-        _invoke_response_data([{"index": 0, "embedding": [0.1]}])
-    )
+    response_body = _json_streaming(_invoke_response_data([{"index": 0, "embedding": [0.1]}]))
     expected_body = json.dumps(
         {
             "data": [{"text": "hello"}],
@@ -463,9 +461,7 @@ def test_embed_v2_no_parameters_block(client):
 
 def test_embed_colbert_query(client):
     _connect(client, ARN_COLBERT)
-    expected_body = json.dumps(
-        {"data": {"text": "find this"}, "parameters": {"input_type": "query"}}
-    )
+    expected_body = json.dumps({"data": {"text": "find this"}, "parameters": {"input_type": "query"}})
     with Stubber(client._sm_runtime_client) as stub:
         stub.add_response(
             "invoke_endpoint",
@@ -518,9 +514,7 @@ def test_rerank_no_endpoint_raises(client):
 
 def test_rerank_strings_normalized_to_dicts(client):
     _connect(client, ARN_RERANKER)
-    expected_body = json.dumps(
-        {"data": {"documents": [{"text": "a"}, {"text": "b"}], "query": "q"}}
-    )
+    expected_body = json.dumps({"data": {"documents": [{"text": "a"}, {"text": "b"}], "query": "q"}})
     with Stubber(client._sm_runtime_client) as stub:
         stub.add_response(
             "invoke_endpoint",
@@ -695,9 +689,7 @@ def test_read_async_model_dispatch(client, arn, model_name):
         result = client.read_async("hi", input_s3)
 
     boto_client.assert_called_once_with("s3", region_name="us-east-1")
-    s3_mock.put_object.assert_called_once_with(
-        Bucket="bucket", Key="prefix/input.json", Body=expected_body
-    )
+    s3_mock.put_object.assert_called_once_with(Bucket="bucket", Key="prefix/input.json", Body=expected_body)
     assert result == {
         "OutputLocation": "s3://bucket/output/result.out",
         "InputLocation": input_s3,
@@ -721,9 +713,7 @@ def test_delete_endpoint_full(client):
 
     with Stubber(client._sm_client) as stub:
         stub.add_response("delete_endpoint", {}, {"EndpointName": "test-endpoint"})
-        stub.add_response(
-            "delete_endpoint_config", {}, {"EndpointConfigName": "test-endpoint"}
-        )
+        stub.add_response("delete_endpoint_config", {}, {"EndpointConfigName": "test-endpoint"})
         stub.add_response("delete_model", {}, {"ModelName": "test-endpoint"})
         client.delete_endpoint()
 
@@ -783,9 +773,7 @@ def test_connect_to_endpoint_with_model_override(client):
             _describe_endpoint_response("test-endpoint"),
             {"EndpointName": "test-endpoint"},
         )
-        client.connect_to_endpoint(
-            "test-endpoint", ARN_CLIP_V2, model="jina-embeddings-v4"
-        )
+        client.connect_to_endpoint("test-endpoint", ARN_CLIP_V2, model="jina-embeddings-v4")
     assert client._model_spec is not None
     assert client._model_spec.family == "embeddings-v4"
 

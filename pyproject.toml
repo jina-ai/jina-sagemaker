@@ -54,12 +54,32 @@ include = [
 [tool.hatch.build.targets.wheel]
 packages = ["jina_sagemaker"]
 
-[tool.black]
-skip-string-normalization = true
-target-version = ["py310", "py311", "py312", "py313"]
+[tool.ruff]
+line-length = 127
+target-version = "py310"
+# Notebooks and examples are customer-facing reference material; their
+# formatting is curated by the docs team, not enforced by CI.
+extend-exclude = ["notebooks", "examples"]
 
-[tool.isort]
-profile = "black"
+[tool.ruff.format]
+# Match the prior `black -S` (skip-string-normalization) behaviour so this
+# swap does not churn every single- vs double-quoted literal in the repo.
+quote-style = "preserve"
+
+[tool.ruff.lint]
+# E + W: pycodestyle errors/warnings (covers the old flake8 E9 set).
+# F:     pyflakes (undefined names, unused imports, etc. — old F63/F7/F82).
+# I:     isort import-order rules (replaces the standalone isort tool).
+# C90:   mccabe complexity (replaces flake8 --max-complexity).
+select = ["E", "F", "I", "C90", "W"]
+
+[tool.ruff.lint.mccabe]
+# Matches the previous flake8 --max-complexity=20 cap. Lower this once
+# create_async_endpoint and embed() are simpler.
+max-complexity = 20
+
+[tool.ruff.lint.isort]
+known-first-party = ["jina_sagemaker"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

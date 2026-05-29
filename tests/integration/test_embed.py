@@ -49,7 +49,5 @@ class TestClipV2:
         assert len(result) == 1
 
     def test_embed_image_url(self, clip_v2_client):
-        result = clip_v2_client.embed(
-            image_urls="https://dummyimage.com/224x224/000/fff.jpg&text=test"
-        )
+        result = clip_v2_client.embed(image_urls="https://dummyimage.com/224x224/000/fff.jpg&text=test")
         assert len(result) == 1
