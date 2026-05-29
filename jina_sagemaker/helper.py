@@ -1,6 +1,8 @@
 import csv
 import os
 import uuid
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Optional
 
 import boto3
 
@@ -53,24 +55,60 @@ def get_role():
         return "ServiceRoleSagemaker"
 
 
-def download_s3_folder(path: str, local_dir: str = None):
-    """
-    Download the contents of a folder directory
+def download_s3_folder(
+    path: str,
+    local_dir: Optional[str] = None,
+    max_workers: int = 16,
+) -> None:
+    """Download every object under an S3 prefix in parallel.
+
     Args:
-        path: the s3 path
-        local_dir: a relative or absolute directory path in the local file system
+        path: An ``s3://bucket/prefix`` URI. All objects under the prefix
+            are downloaded; objects whose key ends in ``/`` (S3 folder
+            markers) are skipped.
+        local_dir: Local destination root. When set, each downloaded object
+            is written to ``<local_dir>/<key-relative-to-prefix>``; when
+            ``None`` the object key itself is used verbatim as the path
+            (preserving the original behaviour of this helper).
+        max_workers: Upper bound on concurrent ``Bucket.download_file``
+            calls. Capped to the actual object count so we don't spawn
+            extra threads for tiny folders.
+
+    Re-raises the first exception any worker thread encounters so partial
+    failures surface as a single clean error to the caller, rather than a
+    half-downloaded folder with no signal.
     """
     bucket_name, s3_folder = path.replace("s3://", "").split("/", 1)
     s3 = boto3.resource("s3")
     bucket = s3.Bucket(bucket_name)
+
+    # Pass 1: enumerate the listing serially and create target directories.
+    # Directory creation runs serially because parallel makedirs() against
+    # a shared parent races; the listing+mkdir cost is negligible compared
+    # to the downloads themselves.
+    tasks = []
     for obj in bucket.objects.filter(Prefix=s3_folder):
+        if obj.key.endswith("/"):
+            continue
         target = (
             obj.key
             if local_dir is None
             else os.path.join(local_dir, os.path.relpath(obj.key, s3_folder))
         )
-        if not os.path.exists(os.path.dirname(target)):
-            os.makedirs(os.path.dirname(target))
-        if obj.key[-1] == "/":
-            continue
-        bucket.download_file(obj.key, target)
+        parent = os.path.dirname(target)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
+        tasks.append((obj.key, target))
+
+    if not tasks:
+        return
+
+    # Pass 2: parallel downloads. ThreadPoolExecutor is the right choice
+    # here — download_file releases the GIL while waiting on socket I/O,
+    # so thread-level parallelism translates directly into bandwidth.
+    with ThreadPoolExecutor(max_workers=min(max_workers, len(tasks))) as pool:
+        futures = [
+            pool.submit(bucket.download_file, key, target) for key, target in tasks
+        ]
+        for fut in as_completed(futures):
+            fut.result()
