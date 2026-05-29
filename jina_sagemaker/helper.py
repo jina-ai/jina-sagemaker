@@ -25,9 +25,9 @@ def prefix_csv_with_ids(input_path: str) -> str:
 
         first_row = next(reader, None)
         if first_row is None:
-            return
+            raise ValueError(f"Input CSV {input_path!r} is empty")
 
-        has_uuid = is_uuid(first_row[0]) if first_row else False
+        has_uuid = is_uuid(first_row[0])
 
         infile.seek(0)
         for row in reader:

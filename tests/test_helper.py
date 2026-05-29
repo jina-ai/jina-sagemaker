@@ -3,6 +3,8 @@ import os
 import tempfile
 import uuid
 
+import pytest
+
 from jina_sagemaker.helper import prefix_csv_with_ids
 
 # Real 32-character hex UUIDs (no dashes) — uuid.UUID() accepts both forms.
@@ -40,6 +42,20 @@ def test_prefix_csv_adds_uuid_when_missing():
         os.remove(input_path)
         if os.path.exists(output_path):
             os.remove(output_path)
+
+
+def test_prefix_csv_raises_on_empty_input():
+    with tempfile.NamedTemporaryFile(
+        mode="w", delete=False, suffix=".csv", encoding="utf-8"
+    ) as f:
+        input_path = f.name
+        # leave file empty
+
+    try:
+        with pytest.raises(ValueError, match="empty"):
+            prefix_csv_with_ids(input_path)
+    finally:
+        os.remove(input_path)
 
 
 def test_prefix_csv_preserves_existing_uuids():
