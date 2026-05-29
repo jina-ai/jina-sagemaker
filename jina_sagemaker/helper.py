@@ -97,11 +97,7 @@ def download_s3_folder(
     for obj in bucket.objects.filter(Prefix=s3_folder):
         if obj.key.endswith("/"):
             continue
-        target = (
-            obj.key
-            if local_dir is None
-            else os.path.join(local_dir, os.path.relpath(obj.key, s3_folder))
-        )
+        target = obj.key if local_dir is None else os.path.join(local_dir, os.path.relpath(obj.key, s3_folder))
         parent = os.path.dirname(target)
         if parent:
             os.makedirs(parent, exist_ok=True)
@@ -115,9 +111,6 @@ def download_s3_folder(
     # which is why we don't reuse ``bucket.download_file`` here.
     s3_client = boto3.client("s3")
     with ThreadPoolExecutor(max_workers=min(max_workers, len(tasks))) as pool:
-        futures = [
-            pool.submit(s3_client.download_file, bucket_name, key, target)
-            for key, target in tasks
-        ]
+        futures = [pool.submit(s3_client.download_file, bucket_name, key, target) for key, target in tasks]
         for fut in as_completed(futures):
             fut.result()

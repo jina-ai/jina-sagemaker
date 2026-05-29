@@ -25,9 +25,7 @@ def _read_rows(path):
 
 
 def test_prefix_csv_adds_uuid_when_missing():
-    with tempfile.NamedTemporaryFile(
-        mode="w", delete=False, suffix=".csv", encoding="utf-8"
-    ) as f:
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".csv", encoding="utf-8") as f:
         f.write(SAMPLE_CSV_NO_IDS)
         input_path = f.name
 
@@ -46,9 +44,7 @@ def test_prefix_csv_adds_uuid_when_missing():
 
 
 def test_prefix_csv_raises_on_empty_input():
-    with tempfile.NamedTemporaryFile(
-        mode="w", delete=False, suffix=".csv", encoding="utf-8"
-    ) as f:
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".csv", encoding="utf-8") as f:
         input_path = f.name
         # leave file empty
 
@@ -61,9 +57,7 @@ def test_prefix_csv_raises_on_empty_input():
 
 def test_prefix_csv_handles_blank_leading_line():
     """A CSV whose first line is blank must NOT crash on first_row[0]."""
-    with tempfile.NamedTemporaryFile(
-        mode="w", delete=False, suffix=".csv", encoding="utf-8"
-    ) as f:
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".csv", encoding="utf-8") as f:
         f.write("\nHow is the weather today?\nWhen are you open?\n")
         input_path = f.name
 
@@ -84,9 +78,7 @@ def test_prefix_csv_handles_blank_leading_line():
 
 
 def test_prefix_csv_preserves_existing_uuids():
-    with tempfile.NamedTemporaryFile(
-        mode="w", delete=False, suffix=".csv", encoding="utf-8"
-    ) as f:
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".csv", encoding="utf-8") as f:
         f.write(SAMPLE_CSV_WITH_IDS)
         input_path = f.name
 

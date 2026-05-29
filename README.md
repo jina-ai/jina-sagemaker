@@ -45,7 +45,15 @@ pip install -e .[test]
 pytest
 ```
 
-Formatting and linting use `black`, `isort`, and `flake8`; configuration lives in `pyproject.toml`. A pre-commit hook is provided:
+Formatting and linting use [`ruff`](https://github.com/astral-sh/ruff); configuration lives in `pyproject.toml`:
+
+```bash
+pip install ruff
+ruff format .       # apply formatting
+ruff check --fix .  # apply lint autofixes
+```
+
+A pre-commit hook is provided:
 
 ```bash
 pip install pre-commit

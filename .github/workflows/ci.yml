@@ -24,16 +24,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install linters
-        run: pip install black isort flake8
-      - name: black --check
-        run: black --check .
-      - name: isort --check
-        run: isort --check .
-      - name: flake8 syntax errors
-        run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .git,__pycache__,build,dist
-      - name: flake8 style
-        run: flake8 . --count --max-complexity=20 --max-line-length=127 --statistics --exclude .git,__pycache__,build,dist
+      - name: Install ruff
+        run: pip install ruff
+      - name: ruff format --check
+        run: ruff format --check .
+      - name: ruff check
+        run: ruff check .
 
   tests:
     strategy:

@@ -33,9 +33,7 @@ def pytest_collection_modifyitems(config, items):  # noqa: D401
     """Skip every integration test unless ``RUN_INTEGRATION_TESTS=1``."""
     if os.environ.get("RUN_INTEGRATION_TESTS") == "1":
         return
-    skip_marker = pytest.mark.skip(
-        reason="Integration tests are opt-in. Set RUN_INTEGRATION_TESTS=1 to enable."
-    )
+    skip_marker = pytest.mark.skip(reason="Integration tests are opt-in. Set RUN_INTEGRATION_TESTS=1 to enable.")
     for item in items:
         item.add_marker(skip_marker)
 
@@ -53,10 +51,7 @@ def _resolve_endpoint(prefix: str) -> tuple[str, str] | None:
 def _build_client(prefix: str, *, model: str | None = None) -> Client:
     pair = _resolve_endpoint(prefix)
     if pair is None:
-        pytest.skip(
-            f"JINA_TEST_{prefix}_ENDPOINT and JINA_TEST_{prefix}_ARN must "
-            "both be set to run this test."
-        )
+        pytest.skip(f"JINA_TEST_{prefix}_ENDPOINT and JINA_TEST_{prefix}_ARN must both be set to run this test.")
     endpoint_name, arn = pair
     client = Client(region_name=os.environ.get("AWS_REGION", "us-east-1"))
     client.connect_to_endpoint(endpoint_name, arn, model=model)
