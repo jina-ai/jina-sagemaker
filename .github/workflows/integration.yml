@@ -1,0 +1,42 @@
+name: Integration tests
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'  # Mondays 06:00 UTC
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    environment: integration
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      RUN_INTEGRATION_TESTS: '1'
+      AWS_REGION: ${{ vars.AWS_REGION || 'us-east-1' }}
+      JINA_TEST_V3_ENDPOINT: ${{ vars.JINA_TEST_V3_ENDPOINT }}
+      JINA_TEST_V3_ARN: ${{ vars.JINA_TEST_V3_ARN }}
+      JINA_TEST_V4_ENDPOINT: ${{ vars.JINA_TEST_V4_ENDPOINT }}
+      JINA_TEST_V4_ARN: ${{ vars.JINA_TEST_V4_ARN }}
+      JINA_TEST_CLIP_V2_ENDPOINT: ${{ vars.JINA_TEST_CLIP_V2_ENDPOINT }}
+      JINA_TEST_CLIP_V2_ARN: ${{ vars.JINA_TEST_CLIP_V2_ARN }}
+      JINA_TEST_RERANKER_ENDPOINT: ${{ vars.JINA_TEST_RERANKER_ENDPOINT }}
+      JINA_TEST_RERANKER_ARN: ${{ vars.JINA_TEST_RERANKER_ARN }}
+      JINA_TEST_READER_LM_V2_ENDPOINT: ${{ vars.JINA_TEST_READER_LM_V2_ENDPOINT }}
+      JINA_TEST_READER_LM_V2_ARN: ${{ vars.JINA_TEST_READER_LM_V2_ARN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_INTEGRATION_TEST_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[test]
+      - name: Run integration tests
+        run: pytest tests/integration/ -v
