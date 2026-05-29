@@ -32,6 +32,7 @@ class Task(Enum):
     RETRIEVAL_PASSAGE = "retrieval.passage"
     TEXT_MATCHING = "text-matching"
     CLASSIFICATION = "classification"
+    CLUSTERING = "clustering"
     SEPARATION = "separation"
 
 
@@ -56,6 +57,14 @@ class ModelSpec:
 # entry, and ``jina-embeddings-v4`` before ``jina-embeddings``).
 _DETECTION_TABLE: List[Tuple[str, ModelSpec]] = [
     ("jina-reranker-m0", ModelSpec("jina-reranker-m0", "reranker-m0")),
+    (
+        "jina-embeddings-v5-text-nano",
+        ModelSpec("jina-embeddings-v5-text-nano", "embeddings-v5"),
+    ),
+    (
+        "jina-embeddings-v5-text-small",
+        ModelSpec("jina-embeddings-v5-text-small", "embeddings-v5"),
+    ),
     ("jina-embeddings-v4", ModelSpec("jina-embeddings-v4", "embeddings-v4")),
     ("jina-embeddings-v3", ModelSpec("jina-embeddings-v3", "embeddings-v3")),
     ("jina-clip-v2", ModelSpec("jina-clip-v2", "clip-v2")),
@@ -574,9 +583,9 @@ class Client:
                 media types and is only supported on ``jina-embeddings-v4``.
             use_colbert: Use the ColBERT request shape.
             input_type: Treat texts as queries or documents (ColBERT only).
-            task_type: Downstream task for v3/v4/clip-v2; ``None`` selects
+            task_type: Downstream task for v3/v4/v5/clip-v2; ``None`` selects
                 the default ``"text-matching"``.
-            dimensions: Output dimensions (v3/v4/clip-v2).
+            dimensions: Output dimensions (v3/v4/v5/clip-v2).
             late_chunking: Apply the late-chunking technique (v3/v4).
             return_multivector: Return multi-vector output (v4 only).
         """
@@ -607,6 +616,13 @@ class Client:
                 }
                 if spec.family == "embeddings-v4":
                     data_obj["parameters"]["return_multivector"] = return_multivector
+            elif spec.family == "embeddings-v5":
+                # v5 nano/small are text-only and accept only task + dimensions —
+                # no late_chunking, no return_multivector, no images.
+                data_obj["parameters"] = {
+                    "task": task_type.value if task_type else "text-matching",
+                    "dimensions": dimensions,
+                }
             elif spec.family == "clip-v2":
                 data_obj["parameters"] = {
                     "task": task_type.value if task_type else "text-matching",

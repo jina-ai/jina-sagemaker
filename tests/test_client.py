@@ -32,6 +32,8 @@ def _arn(slug: str) -> str:
 ARN_V2 = _arn("jina-embeddings-v2-base-en")
 ARN_V3 = _arn("jina-embeddings-v3")
 ARN_V4 = _arn("jina-embeddings-v4")
+ARN_V5_NANO = _arn("jina-embeddings-v5-text-nano-v1-0-0")
+ARN_V5_SMALL = _arn("jina-embeddings-v5-text-small-v1-0-0")
 ARN_CLIP_V2 = _arn("jina-clip-v2")
 ARN_RERANKER = _arn("jina-reranker-v2-base-multilingual")
 ARN_RERANKER_M0 = _arn("jina-reranker-m0")
@@ -361,6 +363,145 @@ def test_embed_v4_pdf(client):
             },
         )
         client.embed(pdf_url="https://example.com/x.pdf")
+
+
+def test_embed_v5_nano_text_default_task(client):
+    _connect(client, ARN_V5_NANO)
+    expected_body = json.dumps(
+        {
+            "data": [{"text": "hello"}],
+            "parameters": {
+                "task": "text-matching",
+                "dimensions": None,
+            },
+        }
+    )
+    with Stubber(client._sm_runtime_client) as stub:
+        stub.add_response(
+            "invoke_endpoint",
+            {
+                "Body": _json_streaming(_invoke_response_data([])),
+                "ContentType": "application/json",
+            },
+            {
+                "EndpointName": "test-endpoint",
+                "ContentType": "application/json",
+                "Body": expected_body,
+            },
+        )
+        client.embed(texts="hello")
+
+
+def test_embed_v5_nano_with_task_and_dimensions(client):
+    _connect(client, ARN_V5_NANO)
+    expected_body = json.dumps(
+        {
+            "data": [{"text": "q"}],
+            "parameters": {
+                "task": "retrieval.query",
+                "dimensions": 256,
+            },
+        }
+    )
+    with Stubber(client._sm_runtime_client) as stub:
+        stub.add_response(
+            "invoke_endpoint",
+            {
+                "Body": _json_streaming(_invoke_response_data([])),
+                "ContentType": "application/json",
+            },
+            {
+                "EndpointName": "test-endpoint",
+                "ContentType": "application/json",
+                "Body": expected_body,
+            },
+        )
+        client.embed(texts="q", task_type=Task.RETRIEVAL_QUERY, dimensions=256)
+
+
+def test_embed_v5_nano_clustering_task(client):
+    """The CLUSTERING Task enum value was added for v5; this locks it in."""
+    _connect(client, ARN_V5_NANO)
+    expected_body = json.dumps(
+        {
+            "data": [{"text": "x"}],
+            "parameters": {
+                "task": "clustering",
+                "dimensions": None,
+            },
+        }
+    )
+    with Stubber(client._sm_runtime_client) as stub:
+        stub.add_response(
+            "invoke_endpoint",
+            {
+                "Body": _json_streaming(_invoke_response_data([])),
+                "ContentType": "application/json",
+            },
+            {
+                "EndpointName": "test-endpoint",
+                "ContentType": "application/json",
+                "Body": expected_body,
+            },
+        )
+        client.embed(texts="x", task_type=Task.CLUSTERING)
+
+
+def test_embed_v5_small_text_list(client):
+    _connect(client, ARN_V5_SMALL)
+    expected_body = json.dumps(
+        {
+            "data": [{"text": "a"}, {"text": "b"}],
+            "parameters": {
+                "task": "text-matching",
+                "dimensions": 1024,
+            },
+        }
+    )
+    with Stubber(client._sm_runtime_client) as stub:
+        stub.add_response(
+            "invoke_endpoint",
+            {
+                "Body": _json_streaming(_invoke_response_data([])),
+                "ContentType": "application/json",
+            },
+            {
+                "EndpointName": "test-endpoint",
+                "ContentType": "application/json",
+                "Body": expected_body,
+            },
+        )
+        client.embed(texts=["a", "b"], dimensions=1024)
+
+
+def test_embed_v5_ignores_late_chunking_and_return_multivector(client):
+    """v5 server does not accept late_chunking / return_multivector — the
+    client must drop them silently rather than forwarding fields the server
+    will reject."""
+    _connect(client, ARN_V5_NANO)
+    expected_body = json.dumps(
+        {
+            "data": [{"text": "h"}],
+            "parameters": {
+                "task": "text-matching",
+                "dimensions": None,
+            },
+        }
+    )
+    with Stubber(client._sm_runtime_client) as stub:
+        stub.add_response(
+            "invoke_endpoint",
+            {
+                "Body": _json_streaming(_invoke_response_data([])),
+                "ContentType": "application/json",
+            },
+            {
+                "EndpointName": "test-endpoint",
+                "ContentType": "application/json",
+                "Body": expected_body,
+            },
+        )
+        client.embed(texts="h", late_chunking=True, return_multivector=True)
 
 
 def test_embed_clip_v2_image_url_uses_url_key(client):
@@ -739,6 +880,8 @@ def test_resolve_model_detects_each_family():
         (ARN_V2, "embeddings-default"),
         (ARN_V3, "embeddings-v3"),
         (ARN_V4, "embeddings-v4"),
+        (ARN_V5_NANO, "embeddings-v5"),
+        (ARN_V5_SMALL, "embeddings-v5"),
         (ARN_CLIP_V2, "clip-v2"),
         (ARN_RERANKER, "reranker"),
         (ARN_RERANKER_M0, "reranker-m0"),
