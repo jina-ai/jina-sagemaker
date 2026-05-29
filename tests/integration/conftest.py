@@ -14,6 +14,20 @@ import pytest
 
 from jina_sagemaker import Client
 
+# The parent tests/conftest.py installs placeholder AWS credentials so the
+# Stubber-based unit suite can import boto3/sagemaker without complaining.
+# Those placeholders are picked up by the default boto3 credential chain
+# AHEAD of AWS_PROFILE, so a developer who runs the integration suite with
+# only ``AWS_PROFILE=...`` set would silently authenticate as the fake
+# ``testing`` IAM principal. Clear the known placeholder values here, only
+# under integration mode and only when they still match the placeholders
+# (so a developer who explicitly set real AWS_ACCESS_KEY_ID=... is left
+# untouched).
+if os.environ.get("RUN_INTEGRATION_TESTS") == "1":
+    for _key in ("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN"):
+        if os.environ.get(_key) == "testing":
+            del os.environ[_key]
+
 
 def pytest_collection_modifyitems(config, items):  # noqa: D401
     """Skip every integration test unless ``RUN_INTEGRATION_TESTS=1``."""
@@ -71,4 +85,9 @@ def reranker_client() -> Client:
 
 @pytest.fixture
 def reader_lm_v2_client() -> Client:
-    return _build_client("READER_LM_V2")
+    # Real Marketplace ARNs for ReaderLM-v2 use a lowercased product-id
+    # slug (e.g. reader-lm-v2-...), which does NOT match the case-
+    # sensitive "ReaderLM-v2" substring in the detection table. Pin the
+    # model explicitly so the fixture-built client always sends the
+    # right request shape regardless of how the ARN happens to be cased.
+    return _build_client("READER_LM_V2", model="ReaderLM-v2")
