@@ -57,10 +57,13 @@ def _json_streaming(obj) -> StreamingBody:
 def _connect(client: Client, arn: str, endpoint_name: str = "test-endpoint") -> None:
     """Bypass connect_to_endpoint() so individual tests don't have to stub
     describe_endpoint just to set up Client state."""
+    from jina_sagemaker.client import _resolve_model
+
     client._endpoint_name = endpoint_name
     client._variant_name = "AllTraffic"
     client._resource_id = f"endpoint/{endpoint_name}/variant/AllTraffic"
     client._arn = arn
+    client._model_spec = _resolve_model(arn)
 
 
 def _describe_endpoint_response(name: str = "test-endpoint") -> dict:
@@ -691,7 +694,7 @@ def test_read_async_model_dispatch(client, arn, model_name):
 
         result = client.read_async("hi", input_s3)
 
-    boto_client.assert_called_once_with("s3")
+    boto_client.assert_called_once_with("s3", region_name="us-east-1")
     s3_mock.put_object.assert_called_once_with(
         Bucket="bucket", Key="prefix/input.json", Body=expected_body
     )
@@ -731,3 +734,112 @@ def test_delete_endpoint_only_endpoint_set(client):
     with Stubber(client._sm_client) as stub:
         stub.add_response("delete_endpoint", {}, {"EndpointName": "test-endpoint"})
         client.delete_endpoint()
+
+
+# ----------------------------------------------------------------------------
+# PR2 hardening: model dispatch override, region threading, close(),
+# create_transform_job wait=False guard.
+# ----------------------------------------------------------------------------
+
+
+def test_resolve_model_detects_each_family():
+    from jina_sagemaker.client import _resolve_model
+
+    cases = [
+        (ARN_V2, "embeddings-default"),
+        (ARN_V3, "embeddings-v3"),
+        (ARN_V4, "embeddings-v4"),
+        (ARN_CLIP_V2, "clip-v2"),
+        (ARN_RERANKER, "reranker"),
+        (ARN_RERANKER_M0, "reranker-m0"),
+        (ARN_READER_0_5B, "reader-lm"),
+        (ARN_READER_1_5B, "reader-lm"),
+        (ARN_READER_LM_V2, "reader-lm"),
+        (ARN_COLBERT, "colbert"),
+    ]
+    for arn, family in cases:
+        assert _resolve_model(arn).family == family, arn
+
+
+def test_resolve_model_override_wins_over_arn():
+    from jina_sagemaker.client import _resolve_model
+
+    # ARN points at clip-v2 but the customer claims it's actually a v4 endpoint.
+    spec = _resolve_model(ARN_CLIP_V2, override="jina-embeddings-v4")
+    assert spec.family == "embeddings-v4"
+
+
+def test_resolve_model_unknown_override_raises():
+    from jina_sagemaker.client import _resolve_model
+
+    with pytest.raises(ValueError, match="Unknown model override"):
+        _resolve_model(ARN_V3, override="jina-embeddings-v999")
+
+
+def test_connect_to_endpoint_with_model_override(client):
+    with Stubber(client._sm_client) as stub:
+        stub.add_response(
+            "describe_endpoint",
+            _describe_endpoint_response("test-endpoint"),
+            {"EndpointName": "test-endpoint"},
+        )
+        client.connect_to_endpoint(
+            "test-endpoint", ARN_CLIP_V2, model="jina-embeddings-v4"
+        )
+    assert client._model_spec is not None
+    assert client._model_spec.family == "embeddings-v4"
+
+
+def test_init_threads_region_into_sagemaker_session(monkeypatch):
+    """The high-level sagemaker SDK must honour Client(region_name=...) too."""
+    captured = {}
+
+    def fake_session(*args, **kwargs):
+        captured["region_name"] = kwargs.get("region_name")
+        return mock.MagicMock()
+
+    monkeypatch.setattr("jina_sagemaker.client.boto3.Session", fake_session)
+    Client(region_name="eu-west-1")
+    assert captured["region_name"] == "eu-west-1"
+
+
+def test_init_stores_client_args_for_reuse():
+    c = Client(region_name="ap-northeast-1")
+    assert c._client_args["region_name"] == "ap-northeast-1"
+
+
+def test_close_suppresses_attribute_error_on_old_boto3(client, caplog):
+    """Older boto3 builds lacked client.close(); we must not re-raise."""
+    import logging as _logging
+
+    client._sm_runtime_client.close = mock.MagicMock(
+        side_effect=AttributeError("'BotocoreClient' object has no attribute 'close'")
+    )
+    with caplog.at_level(_logging.INFO, logger="jina_sagemaker.client"):
+        client.close()  # must not raise
+
+    assert any("could not be closed" in rec.message for rec in caplog.records)
+
+
+def test_close_succeeds_on_modern_boto3(client):
+    runtime_close = mock.MagicMock()
+    sm_close = mock.MagicMock()
+    client._sm_runtime_client.close = runtime_close
+    client._sm_client.close = sm_close
+
+    client.close()
+
+    runtime_close.assert_called_once_with()
+    sm_close.assert_called_once_with()
+
+
+def test_create_transform_job_rejects_wait_false_with_local_output(client):
+    with pytest.raises(ValueError, match="requires an s3:// output_path"):
+        client.create_transform_job(
+            arn=ARN_V3,
+            n_instances=1,
+            instance_type="ml.m5.xlarge",
+            input_path="s3://bucket/in.csv",
+            output_path="/tmp/local-output",
+            wait=False,
+        )

@@ -25,8 +25,11 @@ def prefix_csv_with_ids(input_path: str) -> str:
 
         first_row = next(reader, None)
         if first_row is None:
-            return
+            raise ValueError(f"Input CSV {input_path!r} is empty")
 
+        # csv.reader returns an empty list ([]) for a blank leading line —
+        # treat that as "no UUID present" so we still prefix every data row
+        # rather than crashing on first_row[0].
         has_uuid = is_uuid(first_row[0]) if first_row else False
 
         infile.seek(0)
