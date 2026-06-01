@@ -1,0 +1,2 @@
+"c6bd2b9cdeda4da5978fa53e4578bf8b","[""A beautiful sunset over the beach"", ""Un beau coucher de soleil sur la plage"", ""海滩上美丽的日落""]","{""task"": ""retrieval.passage"", ""dimensions"": 768}"
+"383419db38754881bf14e49c4d96d0f7","[""Machine learning is a subset of artificial intelligence"", ""The quick brown fox jumps over the lazy dog""]","{""task"": ""text-matching"", ""dimensions"": 256}"
