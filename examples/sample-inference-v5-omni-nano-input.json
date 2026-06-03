@@ -1,0 +1,45 @@
+{
+  // "data": List of items to embed into a single shared vector space.
+  //   jina-embeddings-v5-omni-nano is multimodal: each item may be a plain
+  //   text string, or a single-key object selecting a modality:
+  //     {"text":  "..."}                      plain text
+  //     {"image": "<url | data-uri | base64>"} image (jpg, png, gif, webp, ...)
+  //     {"audio": "<url | data-uri | base64>"} audio (wav, mp3, flac, ...)
+  //     {"video": "<url | data-uri | base64>"} video (mp4, mov, webm, ...)
+  //     {"pdf":   "<url | data-uri | base64>"} PDF document (single item per request)
+  //   Modality limits: images must be minimum 28x28 pixels and maximum 5MB
+  //     each; audio files are limited to 20MB and 120 seconds; video files are
+  //     limited to 20MB and 120 seconds (32 frames sampled); PDF documents are
+  //     limited to 8MB and 512 pages maximum.
+  //   Text and image are shown below; all modalities land in the same space,
+  //   so a text query can retrieve an image, video frame, audio clip, or page.
+  //   Required.
+  "data": [
+    {"text": "A scenic fjord winding between steep green mountains under a clear blue sky"},
+    {"image": "https://www.gstatic.com/webp/gallery/1.jpg"},
+    {"text": "A person walking with an umbrella along a snowy path beside a pond in winter"},
+    {"image": "https://www.gstatic.com/webp/gallery/3.jpg"}
+  ],
+  "parameters": {
+    // "task": Task-specific LoRA adapter. One of:
+    //   - "retrieval.query"   : embed search queries in a query-document retrieval task
+    //   - "retrieval.passage" : embed documents/items to be retrieved
+    //   - "text-matching"     : semantic similarity, symmetric retrieval, recommendation
+    //   - "clustering"        : grouping / separation of items by topic
+    //   - "classification"    : embeddings optimized for classification
+    //   Default: "text-matching".
+    "task": "retrieval.passage",
+
+    // "dimensions": Output embedding size. Matryoshka Representation Learning
+    //   enables truncation with minimal quality loss.
+    //   Range: 32 <= dimensions <= 768. Default: 768.
+    "dimensions": 768
+
+    // "normalized": omni always returns L2-normalized embeddings. Only
+    //   normalized=true is supported; normalized=false returns HTTP 400.
+    // "normalized": true,
+
+    // "embedding_type": Output encoding. "float" (default) or "base64".
+    // "embedding_type": "float"
+  }
+}
