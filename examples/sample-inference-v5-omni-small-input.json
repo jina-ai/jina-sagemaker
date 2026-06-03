@@ -7,6 +7,10 @@
   //     {"audio": "<url | data-uri | base64>"} audio (wav, mp3, flac, ...)
   //     {"video": "<url | data-uri | base64>"} video (mp4, mov, webm, ...)
   //     {"pdf":   "<url | data-uri | base64>"} PDF document (single item per request)
+  //   Modality limits: images must be minimum 28x28 pixels and maximum 5MB
+  //     each; audio files are limited to 20MB and 120 seconds; video files are
+  //     limited to 20MB and 120 seconds (32 frames sampled); PDF documents are
+  //     limited to 8MB and 512 pages maximum.
   //   Text and image are shown below; all modalities land in the same space,
   //   so a text query can retrieve an image, video frame, audio clip, or page.
   //   Required.
