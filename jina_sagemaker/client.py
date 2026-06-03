@@ -65,6 +65,14 @@ _DETECTION_TABLE: List[Tuple[str, ModelSpec]] = [
         "jina-embeddings-v5-text-small",
         ModelSpec("jina-embeddings-v5-text-small", "embeddings-v5"),
     ),
+    (
+        "jina-embeddings-v5-omni-nano",
+        ModelSpec("jina-embeddings-v5-omni-nano", "embeddings-v5-omni"),
+    ),
+    (
+        "jina-embeddings-v5-omni-small",
+        ModelSpec("jina-embeddings-v5-omni-small", "embeddings-v5-omni"),
+    ),
     ("jina-embeddings-v4", ModelSpec("jina-embeddings-v4", "embeddings-v4")),
     ("jina-embeddings-v3", ModelSpec("jina-embeddings-v3", "embeddings-v3")),
     ("jina-clip-v2", ModelSpec("jina-clip-v2", "clip-v2")),
@@ -572,15 +580,20 @@ class Client:
         dimensions: Optional[int] = None,
         late_chunking: Optional[bool] = False,
         return_multivector: Optional[bool] = False,
+        audio_urls: Optional[Union[str, List[str]]] = None,
+        video_urls: Optional[Union[str, List[str]]] = None,
     ):
-        """Embed text, images, or a PDF.
+        """Embed text, images, audio, video, or a PDF.
 
         Args:
             texts: The text or texts to embed.
             image_urls: URL(s) of the image(s) to embed.
             image_bytes: Base64-encoded image bytes.
-            pdf_url: URL of a PDF to embed. PDF cannot be mixed with other
-                media types and is only supported on ``jina-embeddings-v4``.
+            pdf_url: URL of a PDF to embed. On ``jina-embeddings-v4`` a PDF
+                cannot be mixed with other media. On the multimodal
+                ``jina-embeddings-v5-omni`` models a PDF is appended as a
+                ``{"pdf": ...}`` item; the server requires it to be the only
+                item in the request.
             use_colbert: Use the ColBERT request shape.
             input_type: Treat texts as queries or documents (ColBERT only).
             task_type: Downstream task for v3/v4/v5/clip-v2; ``None`` selects
@@ -588,6 +601,10 @@ class Client:
             dimensions: Output dimensions (v3/v4/v5/clip-v2).
             late_chunking: Apply the late-chunking technique (v3/v4).
             return_multivector: Return multi-vector output (v4 only).
+            audio_urls: URL(s), data-URI(s), or base64 of audio to embed
+                (``jina-embeddings-v5-omni`` only).
+            video_urls: URL(s), data-URI(s), or base64 of video to embed
+                (``jina-embeddings-v5-omni`` only).
         """
         self._require_endpoint()
         assert self._model_spec is not None  # _require_endpoint guarantees this
@@ -616,9 +633,11 @@ class Client:
                 }
                 if spec.family == "embeddings-v4":
                     data_obj["parameters"]["return_multivector"] = return_multivector
-            elif spec.family == "embeddings-v5":
-                # v5 nano/small are text-only and accept only task + dimensions —
-                # no late_chunking, no return_multivector, no images.
+            elif spec.family in ("embeddings-v5", "embeddings-v5-omni"):
+                # v5 text and v5 omni accept only task + dimensions — no
+                # late_chunking, no return_multivector. v5 text is text-only;
+                # v5 omni additionally accepts image/audio/video/pdf items
+                # (appended below). Both share this parameters block.
                 data_obj["parameters"] = {
                     "task": task_type.value if task_type else "text-matching",
                     "dimensions": dimensions,
@@ -649,8 +668,26 @@ class Client:
                 else:
                     data_obj["data"] += [{key: ib} for ib in image_bytes]
 
-            if spec.family == "embeddings-v4" and pdf_url:
-                data_obj["data"] = {"pdf": pdf_url}
+            if audio_urls:
+                if isinstance(audio_urls, str):
+                    data_obj["data"] += [{"audio": audio_urls}]
+                else:
+                    data_obj["data"] += [{"audio": a} for a in audio_urls]
+
+            if video_urls:
+                if isinstance(video_urls, str):
+                    data_obj["data"] += [{"video": video_urls}]
+                else:
+                    data_obj["data"] += [{"video": v} for v in video_urls]
+
+            if pdf_url:
+                if spec.family == "embeddings-v4":
+                    # v4 PDF replaces data entirely (cannot mix with media).
+                    data_obj["data"] = {"pdf": pdf_url}
+                elif spec.family == "embeddings-v5-omni":
+                    # omni PDF is a list item; the server requires it to be
+                    # the only item in the request.
+                    data_obj["data"] += [{"pdf": pdf_url}]
 
             data = json.dumps(data_obj)
 

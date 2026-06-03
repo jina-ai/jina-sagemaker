@@ -34,6 +34,8 @@ ARN_V3 = _arn("jina-embeddings-v3")
 ARN_V4 = _arn("jina-embeddings-v4")
 ARN_V5_NANO = _arn("jina-embeddings-v5-text-nano-v1-0-0")
 ARN_V5_SMALL = _arn("jina-embeddings-v5-text-small-v1-0-0")
+ARN_V5_OMNI_NANO = _arn("jina-embeddings-v5-omni-nano-v1-0-0")
+ARN_V5_OMNI_SMALL = _arn("jina-embeddings-v5-omni-small-v1-0-0")
 ARN_CLIP_V2 = _arn("jina-clip-v2")
 ARN_RERANKER = _arn("jina-reranker-v2-base-multilingual")
 ARN_RERANKER_M0 = _arn("jina-reranker-m0")
@@ -504,6 +506,141 @@ def test_embed_v5_ignores_late_chunking_and_return_multivector(client):
         client.embed(texts="h", late_chunking=True, return_multivector=True)
 
 
+def test_embed_v5_omni_text_and_image_mixed(client):
+    """omni accepts mixed text + image items in one shared-space request."""
+    _connect(client, ARN_V5_OMNI_SMALL)
+    expected_body = json.dumps(
+        {
+            "data": [
+                {"text": "a scenic fjord"},
+                {"image": "https://example.com/fjord.jpg"},
+            ],
+            "parameters": {
+                "task": "retrieval.passage",
+                "dimensions": 1024,
+            },
+        }
+    )
+    with Stubber(client._sm_runtime_client) as stub:
+        stub.add_response(
+            "invoke_endpoint",
+            {
+                "Body": _json_streaming(_invoke_response_data([])),
+                "ContentType": "application/json",
+            },
+            {
+                "EndpointName": "test-endpoint",
+                "ContentType": "application/json",
+                "Body": expected_body,
+            },
+        )
+        client.embed(
+            texts="a scenic fjord",
+            image_urls="https://example.com/fjord.jpg",
+            task_type=Task.RETRIEVAL_PASSAGE,
+            dimensions=1024,
+        )
+
+
+def test_embed_v5_omni_audio_uses_audio_key(client):
+    _connect(client, ARN_V5_OMNI_SMALL)
+    expected_body = json.dumps(
+        {
+            "data": [{"audio": "https://example.com/clip.mp3"}],
+            "parameters": {"task": "text-matching", "dimensions": None},
+        }
+    )
+    with Stubber(client._sm_runtime_client) as stub:
+        stub.add_response(
+            "invoke_endpoint",
+            {
+                "Body": _json_streaming(_invoke_response_data([])),
+                "ContentType": "application/json",
+            },
+            {
+                "EndpointName": "test-endpoint",
+                "ContentType": "application/json",
+                "Body": expected_body,
+            },
+        )
+        client.embed(audio_urls="https://example.com/clip.mp3")
+
+
+def test_embed_v5_omni_video_uses_video_key(client):
+    _connect(client, ARN_V5_OMNI_SMALL)
+    expected_body = json.dumps(
+        {
+            "data": [{"video": "https://example.com/v.mp4"}],
+            "parameters": {"task": "text-matching", "dimensions": None},
+        }
+    )
+    with Stubber(client._sm_runtime_client) as stub:
+        stub.add_response(
+            "invoke_endpoint",
+            {
+                "Body": _json_streaming(_invoke_response_data([])),
+                "ContentType": "application/json",
+            },
+            {
+                "EndpointName": "test-endpoint",
+                "ContentType": "application/json",
+                "Body": expected_body,
+            },
+        )
+        client.embed(video_urls="https://example.com/v.mp4")
+
+
+def test_embed_v5_omni_pdf_appended_as_item(client):
+    """Unlike v4 (which replaces data with a single {"pdf": ...}), omni appends
+    the PDF as a list item; the server enforces the single-item rule."""
+    _connect(client, ARN_V5_OMNI_SMALL)
+    expected_body = json.dumps(
+        {
+            "data": [{"pdf": "https://example.com/doc.pdf"}],
+            "parameters": {"task": "text-matching", "dimensions": None},
+        }
+    )
+    with Stubber(client._sm_runtime_client) as stub:
+        stub.add_response(
+            "invoke_endpoint",
+            {
+                "Body": _json_streaming(_invoke_response_data([])),
+                "ContentType": "application/json",
+            },
+            {
+                "EndpointName": "test-endpoint",
+                "ContentType": "application/json",
+                "Body": expected_body,
+            },
+        )
+        client.embed(pdf_url="https://example.com/doc.pdf")
+
+
+def test_embed_v5_omni_ignores_late_chunking_and_return_multivector(client):
+    """omni, like v5 text, must drop late_chunking / return_multivector."""
+    _connect(client, ARN_V5_OMNI_SMALL)
+    expected_body = json.dumps(
+        {
+            "data": [{"text": "h"}],
+            "parameters": {"task": "text-matching", "dimensions": None},
+        }
+    )
+    with Stubber(client._sm_runtime_client) as stub:
+        stub.add_response(
+            "invoke_endpoint",
+            {
+                "Body": _json_streaming(_invoke_response_data([])),
+                "ContentType": "application/json",
+            },
+            {
+                "EndpointName": "test-endpoint",
+                "ContentType": "application/json",
+                "Body": expected_body,
+            },
+        )
+        client.embed(texts="h", late_chunking=True, return_multivector=True)
+
+
 def test_embed_clip_v2_image_url_uses_url_key(client):
     _connect(client, ARN_CLIP_V2)
     expected_body = json.dumps(
@@ -882,6 +1019,8 @@ def test_resolve_model_detects_each_family():
         (ARN_V4, "embeddings-v4"),
         (ARN_V5_NANO, "embeddings-v5"),
         (ARN_V5_SMALL, "embeddings-v5"),
+        (ARN_V5_OMNI_NANO, "embeddings-v5-omni"),
+        (ARN_V5_OMNI_SMALL, "embeddings-v5-omni"),
         (ARN_CLIP_V2, "clip-v2"),
         (ARN_RERANKER, "reranker"),
         (ARN_RERANKER_M0, "reranker-m0"),
