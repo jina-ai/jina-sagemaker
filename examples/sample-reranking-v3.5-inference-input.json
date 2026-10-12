@@ -1,0 +1,17 @@
+{
+    "data": {
+        "documents": [
+            {
+                "text": "Bio-Hautpflege für empfindliche Haut"
+            },
+            {
+                "text": "Neue Make-up-Trends"
+            },
+            {
+                "text": "针对敏感肌专门设计的天然有机护肤产品"
+            }
+        ],
+        "query": "Organic skincare for sensitive skin",
+        "top_n": 3
+    }
+}

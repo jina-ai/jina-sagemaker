@@ -39,6 +39,7 @@ ARN_V5_OMNI_SMALL = _arn("jina-embeddings-v5-omni-small-v1-0-0")
 ARN_CLIP_V2 = _arn("jina-clip-v2")
 ARN_RERANKER = _arn("jina-reranker-v2-base-multilingual")
 ARN_RERANKER_M0 = _arn("jina-reranker-m0")
+ARN_RERANKER_V3_5 = _arn("jina-reranker-v3-5-v1-0-1")
 ARN_READER_0_5B = _arn("reader-lm-500m")
 ARN_READER_1_5B = _arn("reader-lm-1500m")
 ARN_READER_LM_V2 = _arn("ReaderLM-v2")
@@ -876,6 +877,47 @@ def test_rerank_reranker_m0_wraps_data_in_list(client):
         client.rerank(["a"], query="q")
 
 
+def test_rerank_v3_5_sends_optional_fields(client):
+    _connect(client, ARN_RERANKER_V3_5)
+    expected_body = json.dumps(
+        {
+            "data": {
+                "documents": [{"text": "a"}, {"text": "b"}],
+                "query": "q",
+                "top_n": 1,
+                "max_doc_length": 512,
+                "return_documents": False,
+            }
+        }
+    )
+    with Stubber(client._sm_runtime_client) as stub:
+        stub.add_response(
+            "invoke_endpoint",
+            {
+                "Body": _json_streaming(_invoke_response_data([])),
+                "ContentType": "application/json",
+            },
+            {
+                "EndpointName": "test-endpoint",
+                "ContentType": "application/json",
+                "Body": expected_body,
+            },
+        )
+        client.rerank(["a", "b"], query="q", top_n=1, max_doc_length=512, return_documents=False)
+
+
+def test_reranker_v3_5_detection_and_override():
+    from jina_sagemaker.client import _resolve_model
+
+    ami = "al2-ami-sagemaker-batch-gpu-535"
+    assert _resolve_model(ARN_RERANKER_V3_5).transform_ami_version == ami
+    assert _resolve_model(ARN_RERANKER_V3_5).family == "reranker"
+    assert _resolve_model(ARN_RERANKER).transform_ami_version is None
+    # Marketplace ARNs carry a listing-derived name, so the override must work too.
+    marketplace_arn = _arn("jina-reranker-v35-0123456789abcdef")
+    assert _resolve_model(marketplace_arn, "jina-reranker-v3-5").transform_ami_version == ami
+
+
 def test_rerank_rejects_unsupported_doc_type(client):
     _connect(client, ARN_RERANKER)
     with pytest.raises(ValueError, match="Unsupported document type"):
@@ -1101,6 +1143,69 @@ def test_close_succeeds_on_modern_boto3(client):
 
     runtime_close.assert_called_once_with()
     sm_close.assert_called_once_with()
+
+
+def _fake_model_package():
+    transformer = mock.MagicMock()
+    transformer.model_name = "pkg-model"
+    package = mock.MagicMock()
+    package.name = "pkg"
+    package.transformer.return_value = transformer
+    return package, transformer
+
+
+def test_create_transform_job_v3_5_pins_batch_ami(client):
+    package, transformer = _fake_model_package()
+    expected = {
+        "TransformJobName": "pkg-model-job",
+        "ModelName": "pkg-model",
+        "BatchStrategy": "MultiRecord",
+        "TransformInput": {
+            "DataSource": {"S3DataSource": {"S3DataType": "S3Prefix", "S3Uri": "s3://bucket/in.csv"}},
+            "ContentType": "text/csv",
+            "SplitType": "Line",
+        },
+        "TransformOutput": {"S3OutputPath": "s3://bucket/out/"},
+        "TransformResources": {
+            "InstanceType": "ml.g5.xlarge",
+            "InstanceCount": 1,
+            "TransformAmiVersion": "al2-ami-sagemaker-batch-gpu-535",
+        },
+    }
+    with (
+        mock.patch("sagemaker.ModelPackage", return_value=package),
+        mock.patch("sagemaker.utils.name_from_base", return_value="pkg-model-job"),
+        Stubber(client._sm_client) as stub,
+    ):
+        stub.add_response("create_transform_job", {"TransformJobArn": "arn:job"}, expected)
+        job = client.create_transform_job(
+            arn=ARN_RERANKER_V3_5,
+            n_instances=1,
+            instance_type="ml.g5.xlarge",
+            input_path="s3://bucket/in.csv",
+            output_path="s3://bucket/out/",
+            role="role",
+            wait=False,
+        )
+    assert job == "pkg-model-job"
+    transformer.transform.assert_not_called()
+
+
+def test_create_transform_job_other_models_use_sdk_transform(client):
+    package, transformer = _fake_model_package()
+    transformer.latest_transform_job.name = "sdk-job"
+    with mock.patch("sagemaker.ModelPackage", return_value=package), Stubber(client._sm_client):
+        job = client.create_transform_job(
+            arn=ARN_RERANKER,
+            n_instances=1,
+            instance_type="ml.g5.xlarge",
+            input_path="s3://bucket/in.csv",
+            output_path="s3://bucket/out/",
+            role="role",
+            wait=False,
+        )
+    assert job == "sdk-job"
+    transformer.transform.assert_called_once()
 
 
 def test_create_transform_job_rejects_wait_false_with_local_output(client):

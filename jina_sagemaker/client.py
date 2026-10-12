@@ -49,6 +49,8 @@ class ModelSpec:
     name: str
     family: str
     reader_model: Optional[str] = None
+    # Batch transform AMI the model needs instead of the host default.
+    transform_ami_version: Optional[str] = None
 
 
 # Ordered detection table. The first slug that appears as a substring of the
@@ -57,6 +59,16 @@ class ModelSpec:
 # entry, and ``jina-embeddings-v4`` before ``jina-embeddings``).
 _DETECTION_TABLE: List[Tuple[str, ModelSpec]] = [
     ("jina-reranker-m0", ModelSpec("jina-reranker-m0", "reranker-m0")),
+    # A CUDA 12.9 image: g4dn/g5 batch hosts boot a 470 driver by default, which
+    # cannot run it, so batch jobs pin the 535 AMI.
+    (
+        "jina-reranker-v3-5",
+        ModelSpec(
+            "jina-reranker-v3-5",
+            "reranker",
+            transform_ami_version="al2-ami-sagemaker-batch-gpu-535",
+        ),
+    ),
     (
         "jina-embeddings-v5-text-nano",
         ModelSpec("jina-embeddings-v5-text-nano", "embeddings-v5"),
@@ -399,8 +411,11 @@ class Client:
         logs: bool = True,
         assemble_with: Optional[str] = None,
         max_payload: Optional[int] = None,
+        model: Optional[str] = None,
     ) -> Optional[str]:
         import sagemaker
+
+        spec = _resolve_model(arn, model)
 
         # wait=False kicks off the transform asynchronously and returns
         # immediately; a local output_path triggers an immediate
@@ -417,7 +432,7 @@ class Client:
         if role is None:
             role = get_role()
 
-        model = sagemaker.ModelPackage(
+        model_package = sagemaker.ModelPackage(
             name=arn.split("/")[-1],
             role=role,
             model_data=None,
@@ -443,11 +458,12 @@ class Client:
                 "s3://",
                 self._sm_session.default_bucket(),
                 "output",
-                model.name,
+                model_package.name,
                 uid,
             )
 
-        transformer = model.transformer(
+        # Creates the SageMaker model for the package.
+        transformer = model_package.transformer(
             instance_count=n_instances,
             instance_type=instance_type,
             output_path=output_path,
@@ -456,13 +472,30 @@ class Client:
             max_payload=max_payload,
         )
 
-        transformer.transform(
-            data=s3_input_path,
-            content_type="text/csv",
-            split_type="Line",
-            wait=wait,
-            logs=logs,
-        )
+        if spec.transform_ami_version is None:
+            transformer.transform(
+                data=s3_input_path,
+                content_type="text/csv",
+                split_type="Line",
+                wait=wait,
+                logs=logs,
+            )
+            job_name = None
+            if transformer.latest_transform_job is not None:
+                job_name = transformer.latest_transform_job.name
+        else:
+            job_name = self._create_transform_job_with_ami(
+                transformer=transformer,
+                spec=spec,
+                instance_type=instance_type,
+                n_instances=n_instances,
+                s3_input_path=s3_input_path,
+                output_path=output_path,
+                assemble_with=assemble_with,
+                max_payload=max_payload,
+                wait=wait,
+                logs=logs,
+            )
 
         if download_output_path is not None:
             download_s3_folder(
@@ -471,9 +504,55 @@ class Client:
             )
             log.info(f"Output downloaded to {download_output_path}.")
 
-        job_name = None
-        if transformer.latest_transform_job is not None:
-            job_name = transformer.latest_transform_job.name
+        return job_name
+
+    def _create_transform_job_with_ami(
+        self,
+        transformer,
+        spec: ModelSpec,
+        instance_type: str,
+        n_instances: int,
+        s3_input_path: str,
+        output_path: str,
+        assemble_with: Optional[str],
+        max_payload: Optional[int],
+        wait: bool,
+        logs: bool,
+    ) -> str:
+        """Same job as ``Transformer.transform`` plus ``TransformAmiVersion``,
+        which sagemaker<3 cannot pass, so the request goes through boto3."""
+        from sagemaker.utils import name_from_base
+
+        job_name = name_from_base(transformer.model_name)
+        transform_output: Dict = {"S3OutputPath": output_path}
+        if assemble_with:
+            transform_output["AssembleWith"] = assemble_with
+        request: Dict = {
+            "TransformJobName": job_name,
+            "ModelName": transformer.model_name,
+            "BatchStrategy": "MultiRecord",
+            "TransformInput": {
+                "DataSource": {"S3DataSource": {"S3DataType": "S3Prefix", "S3Uri": s3_input_path}},
+                "ContentType": "text/csv",
+                "SplitType": "Line",
+            },
+            "TransformOutput": transform_output,
+            "TransformResources": {
+                "InstanceType": instance_type,
+                "InstanceCount": n_instances,
+                "TransformAmiVersion": spec.transform_ami_version,
+            },
+        }
+        if max_payload is not None:
+            request["MaxPayloadInMB"] = max_payload
+        self._sm_client.create_transform_job(**request)
+        log.info(f"Transform job {job_name} uses AMI {spec.transform_ami_version}.")
+
+        if wait:
+            if logs:
+                self._sm_session.logs_for_transform_job(job_name, wait=True)
+            else:
+                self._sm_session.wait_for_transform_job(job_name)
         return job_name
 
     def _require_endpoint(self) -> None:
@@ -705,7 +784,15 @@ class Client:
         documents: List[Union[str, dict]],
         query: str,
         top_n: Optional[int] = None,
+        max_doc_length: Optional[int] = None,
+        return_documents: Optional[bool] = None,
     ):
+        """Rerank ``documents`` against ``query``.
+
+        ``max_doc_length`` (tokens per document) and ``return_documents`` are
+        jina-reranker-v3.5 only. They are sent only when set, so requests to
+        other rerankers are unchanged.
+        """
         self._require_endpoint()
         assert self._model_spec is not None
 
@@ -725,6 +812,10 @@ class Client:
 
         if top_n:
             data["top_n"] = min(top_n, len(normalized_documents))
+        if max_doc_length is not None:
+            data["max_doc_length"] = max_doc_length
+        if return_documents is not None:
+            data["return_documents"] = return_documents
 
         if self._model_spec.family == "reranker-m0":
             payload = json.dumps({"data": [data]})

@@ -1,0 +1,135 @@
+{
+    "data": [
+        {
+            "id": "34f9ccada01c40de8828e9c68f06150b",
+            "results": [
+                {
+                    "id": "85a5f3598cb7452184f74076489a2fe6",
+                    "index": 0,
+                    "document": {
+                        "id": "1aef46113c4644b59fed04129e6c6ba8",
+                        "text": "the dog is in my house"
+                    },
+                    "relevance_score": 0.29404657,
+                    "usage": {
+                        "id": "aa9535fc788644c9b41054e3cc431ac5",
+                        "total_tokens": 6
+                    }
+                },
+                {
+                    "id": "fbe48e13858642d0ab80d708c1ecfd32",
+                    "index": 2,
+                    "document": {
+                        "id": "e2416b1fd7054441ab6f65c5b316fe16",
+                        "text": "fish chips"
+                    },
+                    "relevance_score": -0.10114032,
+                    "usage": {
+                        "id": "dd61e5907dda4c9bb782330154d1ca21",
+                        "total_tokens": 2
+                    }
+                }
+            ],
+            "query_usage": {
+                "id": "ab0db33082ca4bbc8cd14911e242c1a7",
+                "total_tokens": 4
+            },
+            "docs_usage": {
+                "id": "d3b7706dafb144f2ba5dab54de3061b2",
+                "total_tokens": 12
+            }
+        },
+        {
+            "id": "ccd500fb3d9a4a928cd93b55de732475",
+            "results": [
+                {
+                    "id": "9e7345c6fc2f47b0ab9dc71b0c3d71b1",
+                    "index": 2,
+                    "document": {
+                        "id": "deea09ad9375462ab9f99ffbf6504790",
+                        "text": "针对敏感肌专门设计的天然有机护肤产品"
+                    },
+                    "relevance_score": 0.62092335,
+                    "usage": {
+                        "id": "18f6409dfcf04495858bbe8e420eb024",
+                        "total_tokens": 10
+                    }
+                },
+                {
+                    "id": "7e2d7fdb88644c588f76f5117ca60ceb",
+                    "index": 0,
+                    "document": {
+                        "id": "81ffe131154247179822aebc137e22b9",
+                        "text": "Bio-Hautpflege für empfindliche Haut"
+                    },
+                    "relevance_score": 0.2674969,
+                    "usage": {
+                        "id": "1825a99a32fc4f7a8f410cf6c05225dc",
+                        "total_tokens": 10
+                    }
+                },
+                {
+                    "id": "f5d411f4361949a5a3d08af61cfeccae",
+                    "index": 1,
+                    "document": {
+                        "id": "7b7d5305a6b749cdb64a5b9a824139ca",
+                        "text": "Neue Make-up-Trends"
+                    },
+                    "relevance_score": -0.13675085,
+                    "usage": {
+                        "id": "17373388006742b5864acb08c40ba344",
+                        "total_tokens": 6
+                    }
+                }
+            ],
+            "query_usage": {
+                "id": "08bfe62afe0a451c94d28a13a6bb8957",
+                "total_tokens": 6
+            },
+            "docs_usage": {
+                "id": "afd4a64fa3c84c3d9e18d5761e8d9228",
+                "total_tokens": 26
+            }
+        },
+        {
+            "id": "8b4ae3f4212546df9202899bcc58ab9f",
+            "results": [
+                {
+                    "id": "51719931aa974cb6ab5fd36fdd952f4d",
+                    "index": 0,
+                    "document": {
+                        "id": "3ccde7d936344b1cb0efe1edfad3b629",
+                        "text": "Solar panels convert sunlight into electricity."
+                    },
+                    "relevance_score": 0.42912071,
+                    "usage": {
+                        "id": "08b6f92db5c340958831e82af2de1f9c",
+                        "total_tokens": 7
+                    }
+                },
+                {
+                    "id": "e2739d43ccca42e691cef4c72e5fa8ec",
+                    "index": 1,
+                    "document": {
+                        "id": "bb7fd37254ab43c69cb4f3ac2356c5c0",
+                        "text": "Pizza is baked in an oven."
+                    },
+                    "relevance_score": -0.22112425,
+                    "usage": {
+                        "id": "0664e6a17a7a4e05b91e21be2ae5a0f7",
+                        "total_tokens": 7
+                    }
+                }
+            ],
+            "query_usage": {
+                "id": "5ca97038237d406b905f467bdf9dd2fd",
+                "total_tokens": 5
+            },
+            "docs_usage": {
+                "id": "fb4820769b524db6b160786fcb3f8a15",
+                "total_tokens": 14
+            }
+        }
+    ],
+    "parameters": {}
+}
