@@ -5,6 +5,7 @@ endpoints deployed on AWS SageMaker — real-time inference, batch transform,
 asynchronous inference, and endpoint lifecycle management.
 """
 
+import contextlib
 import json
 import logging
 import os
@@ -411,6 +412,7 @@ class Client:
         logs: bool = True,
         assemble_with: Optional[str] = None,
         max_payload: Optional[int] = None,
+        *,
         model: Optional[str] = None,
     ) -> Optional[str]:
         import sagemaker
@@ -472,7 +474,7 @@ class Client:
             max_payload=max_payload,
         )
 
-        if spec.transform_ami_version is None:
+        with self._pin_transform_ami(spec.transform_ami_version):
             transformer.transform(
                 data=s3_input_path,
                 content_type="text/csv",
@@ -480,22 +482,9 @@ class Client:
                 wait=wait,
                 logs=logs,
             )
-            job_name = None
-            if transformer.latest_transform_job is not None:
-                job_name = transformer.latest_transform_job.name
-        else:
-            job_name = self._create_transform_job_with_ami(
-                transformer=transformer,
-                spec=spec,
-                instance_type=instance_type,
-                n_instances=n_instances,
-                s3_input_path=s3_input_path,
-                output_path=output_path,
-                assemble_with=assemble_with,
-                max_payload=max_payload,
-                wait=wait,
-                logs=logs,
-            )
+        job_name = None
+        if transformer.latest_transform_job is not None:
+            job_name = transformer.latest_transform_job.name
 
         if download_output_path is not None:
             download_s3_folder(
@@ -506,54 +495,23 @@ class Client:
 
         return job_name
 
-    def _create_transform_job_with_ami(
-        self,
-        transformer,
-        spec: ModelSpec,
-        instance_type: str,
-        n_instances: int,
-        s3_input_path: str,
-        output_path: str,
-        assemble_with: Optional[str],
-        max_payload: Optional[int],
-        wait: bool,
-        logs: bool,
-    ) -> str:
-        """Same job as ``Transformer.transform`` plus ``TransformAmiVersion``,
-        which sagemaker<3 cannot pass, so the request goes through boto3."""
-        from sagemaker.utils import name_from_base
+    @contextlib.contextmanager
+    def _pin_transform_ami(self, ami_version: Optional[str]):
+        """Adds ``TransformAmiVersion`` to the SDK's CreateTransformJob request,
+        which sagemaker<3 has no parameter for."""
+        if ami_version is None:
+            yield
+            return
 
-        job_name = name_from_base(transformer.model_name)
-        transform_output: Dict = {"S3OutputPath": output_path}
-        if assemble_with:
-            transform_output["AssembleWith"] = assemble_with
-        request: Dict = {
-            "TransformJobName": job_name,
-            "ModelName": transformer.model_name,
-            "BatchStrategy": "MultiRecord",
-            "TransformInput": {
-                "DataSource": {"S3DataSource": {"S3DataType": "S3Prefix", "S3Uri": s3_input_path}},
-                "ContentType": "text/csv",
-                "SplitType": "Line",
-            },
-            "TransformOutput": transform_output,
-            "TransformResources": {
-                "InstanceType": instance_type,
-                "InstanceCount": n_instances,
-                "TransformAmiVersion": spec.transform_ami_version,
-            },
-        }
-        if max_payload is not None:
-            request["MaxPayloadInMB"] = max_payload
-        self._sm_client.create_transform_job(**request)
-        log.info(f"Transform job {job_name} uses AMI {spec.transform_ami_version}.")
+        def add_ami(params, **kwargs):
+            params["TransformResources"]["TransformAmiVersion"] = ami_version
 
-        if wait:
-            if logs:
-                self._sm_session.logs_for_transform_job(job_name, wait=True)
-            else:
-                self._sm_session.wait_for_transform_job(job_name)
-        return job_name
+        event = "before-parameter-build.sagemaker.CreateTransformJob"
+        self._sm_client.meta.events.register_first(event, add_ami)
+        try:
+            yield
+        finally:
+            self._sm_client.meta.events.unregister(event, add_ami)
 
     def _require_endpoint(self) -> None:
         if self._endpoint_name is None or self._model_spec is None:

@@ -20,7 +20,8 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "boto3>=1.34",
+    # 1.37.23 added TransformResources.TransformAmiVersion, which v3.5 batch jobs send.
+    "boto3>=1.37.23",
     # sagemaker 3.x is a namespace package that drops the legacy top-level API
     # (sagemaker.Session, sagemaker.ModelPackage, sagemaker.get_execution_role).
     # Stay on the 2.x line until this library is ported to the new SDK.

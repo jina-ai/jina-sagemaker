@@ -1,10 +1,15 @@
 import csv
 import os
+import sys
 import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Optional
 
 import boto3
+
+# A reranker row's documents JSON is one CSV field and can pass the default
+# 128K-character limit.
+csv.field_size_limit(sys.maxsize)
 
 
 def prefix_csv_with_ids(input_path: str) -> str:

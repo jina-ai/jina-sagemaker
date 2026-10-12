@@ -6,6 +6,7 @@ family, so future refactors of model dispatch are guaranteed not to change
 customer-visible request bodies.
 """
 
+import copy
 import json
 from datetime import datetime, timezone
 from io import BytesIO
@@ -1145,67 +1146,65 @@ def test_close_succeeds_on_modern_boto3(client):
     sm_close.assert_called_once_with()
 
 
-def _fake_model_package():
+_SDK_TRANSFORM_REQUEST = {
+    "TransformJobName": "sdk-job",
+    "ModelName": "pkg-model",
+    "TransformInput": {"DataSource": {"S3DataSource": {"S3DataType": "S3Prefix", "S3Uri": "s3://bucket/in.csv"}}},
+    "TransformOutput": {"S3OutputPath": "s3://bucket/out/"},
+    "TransformResources": {"InstanceType": "ml.g5.xlarge", "InstanceCount": 1},
+}
+
+
+def _run_transform_job(client, arn, expected_request):
+    """Runs the job with a transformer whose ``transform`` sends the SDK's
+    request through ``client._sm_client``, and checks the params botocore
+    validates and sends. The Stubber's own param check runs ahead of the
+    client's request hooks, so a last-registered spy reads them instead."""
+
+    def send(**kwargs):
+        sent = []
+        event = "before-parameter-build.sagemaker.CreateTransformJob"
+        spy = lambda params, **_: sent.append(copy.deepcopy(params))  # noqa: E731
+        client._sm_client.meta.events.register_last(event, spy)
+        try:
+            with Stubber(client._sm_client) as stub:
+                stub.add_response("create_transform_job", {"TransformJobArn": "arn:job"})
+                client._sm_client.create_transform_job(**copy.deepcopy(_SDK_TRANSFORM_REQUEST))
+        finally:
+            client._sm_client.meta.events.unregister(event, spy)
+        assert sent == [expected_request]
+
     transformer = mock.MagicMock()
-    transformer.model_name = "pkg-model"
+    transformer.latest_transform_job.name = "sdk-job"
+    transformer.transform.side_effect = send
     package = mock.MagicMock()
     package.name = "pkg"
     package.transformer.return_value = transformer
-    return package, transformer
+    with mock.patch("sagemaker.ModelPackage", return_value=package):
+        job = client.create_transform_job(
+            arn=arn,
+            n_instances=1,
+            instance_type="ml.g5.xlarge",
+            input_path="s3://bucket/in.csv",
+            output_path="s3://bucket/out/",
+            role="role",
+            wait=False,
+        )
+    transformer.transform.assert_called_once()
+    return job
+
+
+_V3_5_TRANSFORM_REQUEST = copy.deepcopy(_SDK_TRANSFORM_REQUEST)
+_V3_5_TRANSFORM_REQUEST["TransformResources"]["TransformAmiVersion"] = "al2-ami-sagemaker-batch-gpu-535"
 
 
 def test_create_transform_job_v3_5_pins_batch_ami(client):
-    package, transformer = _fake_model_package()
-    expected = {
-        "TransformJobName": "pkg-model-job",
-        "ModelName": "pkg-model",
-        "BatchStrategy": "MultiRecord",
-        "TransformInput": {
-            "DataSource": {"S3DataSource": {"S3DataType": "S3Prefix", "S3Uri": "s3://bucket/in.csv"}},
-            "ContentType": "text/csv",
-            "SplitType": "Line",
-        },
-        "TransformOutput": {"S3OutputPath": "s3://bucket/out/"},
-        "TransformResources": {
-            "InstanceType": "ml.g5.xlarge",
-            "InstanceCount": 1,
-            "TransformAmiVersion": "al2-ami-sagemaker-batch-gpu-535",
-        },
-    }
-    with (
-        mock.patch("sagemaker.ModelPackage", return_value=package),
-        mock.patch("sagemaker.utils.name_from_base", return_value="pkg-model-job"),
-        Stubber(client._sm_client) as stub,
-    ):
-        stub.add_response("create_transform_job", {"TransformJobArn": "arn:job"}, expected)
-        job = client.create_transform_job(
-            arn=ARN_RERANKER_V3_5,
-            n_instances=1,
-            instance_type="ml.g5.xlarge",
-            input_path="s3://bucket/in.csv",
-            output_path="s3://bucket/out/",
-            role="role",
-            wait=False,
-        )
-    assert job == "pkg-model-job"
-    transformer.transform.assert_not_called()
+    assert _run_transform_job(client, ARN_RERANKER_V3_5, _V3_5_TRANSFORM_REQUEST) == "sdk-job"
 
 
-def test_create_transform_job_other_models_use_sdk_transform(client):
-    package, transformer = _fake_model_package()
-    transformer.latest_transform_job.name = "sdk-job"
-    with mock.patch("sagemaker.ModelPackage", return_value=package), Stubber(client._sm_client):
-        job = client.create_transform_job(
-            arn=ARN_RERANKER,
-            n_instances=1,
-            instance_type="ml.g5.xlarge",
-            input_path="s3://bucket/in.csv",
-            output_path="s3://bucket/out/",
-            role="role",
-            wait=False,
-        )
-    assert job == "sdk-job"
-    transformer.transform.assert_called_once()
+def test_create_transform_job_ami_pin_does_not_leak(client):
+    _run_transform_job(client, ARN_RERANKER_V3_5, _V3_5_TRANSFORM_REQUEST)
+    assert _run_transform_job(client, ARN_RERANKER, _SDK_TRANSFORM_REQUEST) == "sdk-job"
 
 
 def test_create_transform_job_rejects_wait_false_with_local_output(client):
