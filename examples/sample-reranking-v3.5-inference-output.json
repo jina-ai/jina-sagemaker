@@ -1,54 +1,54 @@
 {
     "data": [
         {
-            "id": "ccd500fb3d9a4a928cd93b55de732475",
+            "id": "6aa9615386e545819dee28b0f024668b",
             "results": [
                 {
-                    "id": "9e7345c6fc2f47b0ab9dc71b0c3d71b1",
+                    "id": "28fe58b0abf5415cb632b8d3b03b8903",
                     "index": 2,
                     "document": {
-                        "id": "deea09ad9375462ab9f99ffbf6504790",
+                        "id": "a2f6370be1d0464c8cc793cca48fbb2c",
                         "text": "针对敏感肌专门设计的天然有机护肤产品"
                     },
-                    "relevance_score": 0.62092335,
+                    "relevance_score": 0.62086518,
                     "usage": {
-                        "id": "18f6409dfcf04495858bbe8e420eb024",
+                        "id": "6feada659a3b4328a35f8125b946c40a",
                         "total_tokens": 10
                     }
                 },
                 {
-                    "id": "7e2d7fdb88644c588f76f5117ca60ceb",
+                    "id": "b54fb252aeed4509b6c5dcd544fa685d",
                     "index": 0,
                     "document": {
-                        "id": "81ffe131154247179822aebc137e22b9",
+                        "id": "b5498e29212e4aab890041af93fb1564",
                         "text": "Bio-Hautpflege für empfindliche Haut"
                     },
-                    "relevance_score": 0.2674969,
+                    "relevance_score": 0.26612362,
                     "usage": {
-                        "id": "1825a99a32fc4f7a8f410cf6c05225dc",
+                        "id": "7d2fe7474c0e406281073f6fb441e8f7",
                         "total_tokens": 10
                     }
                 },
                 {
-                    "id": "f5d411f4361949a5a3d08af61cfeccae",
+                    "id": "bae24d83cd9d42bfa66e491c5cfb2883",
                     "index": 1,
                     "document": {
-                        "id": "7b7d5305a6b749cdb64a5b9a824139ca",
+                        "id": "618866f53c0947a1aae5d9711ff30651",
                         "text": "Neue Make-up-Trends"
                     },
-                    "relevance_score": -0.13675085,
+                    "relevance_score": -0.13570704,
                     "usage": {
-                        "id": "17373388006742b5864acb08c40ba344",
+                        "id": "1bbd8300ff5845679aa665943cc6a80a",
                         "total_tokens": 6
                     }
                 }
             ],
             "query_usage": {
-                "id": "08bfe62afe0a451c94d28a13a6bb8957",
+                "id": "944bf81de8244506aa236f0ae6befe60",
                 "total_tokens": 6
             },
             "docs_usage": {
-                "id": "afd4a64fa3c84c3d9e18d5761e8d9228",
+                "id": "b80f765bf90e48979d7ba5b6b2499ae0",
                 "total_tokens": 26
             }
         }
