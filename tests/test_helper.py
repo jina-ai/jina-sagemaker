@@ -43,6 +43,21 @@ def test_prefix_csv_adds_uuid_when_missing():
             os.remove(output_path)
 
 
+def test_prefix_csv_accepts_field_over_default_csv_limit():
+    long_field = "x" * 200_000
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".csv", encoding="utf-8") as f:
+        csv.writer(f).writerow(["query", long_field])
+        input_path = f.name
+
+    try:
+        output_path = prefix_csv_with_ids(input_path)
+        assert _read_rows(output_path)[0][1:] == ["query", long_field]
+    finally:
+        os.remove(input_path)
+        if os.path.exists(output_path):
+            os.remove(output_path)
+
+
 def test_prefix_csv_raises_on_empty_input():
     with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".csv", encoding="utf-8") as f:
         input_path = f.name

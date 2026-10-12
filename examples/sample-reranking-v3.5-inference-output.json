@@ -1,0 +1,56 @@
+{
+    "data": [
+        {
+            "id": "6aa9615386e545819dee28b0f024668b",
+            "results": [
+                {
+                    "id": "28fe58b0abf5415cb632b8d3b03b8903",
+                    "index": 2,
+                    "document": {
+                        "id": "a2f6370be1d0464c8cc793cca48fbb2c",
+                        "text": "针对敏感肌专门设计的天然有机护肤产品"
+                    },
+                    "relevance_score": 0.62086518,
+                    "usage": {
+                        "id": "6feada659a3b4328a35f8125b946c40a",
+                        "total_tokens": 10
+                    }
+                },
+                {
+                    "id": "b54fb252aeed4509b6c5dcd544fa685d",
+                    "index": 0,
+                    "document": {
+                        "id": "b5498e29212e4aab890041af93fb1564",
+                        "text": "Bio-Hautpflege für empfindliche Haut"
+                    },
+                    "relevance_score": 0.26612362,
+                    "usage": {
+                        "id": "7d2fe7474c0e406281073f6fb441e8f7",
+                        "total_tokens": 10
+                    }
+                },
+                {
+                    "id": "bae24d83cd9d42bfa66e491c5cfb2883",
+                    "index": 1,
+                    "document": {
+                        "id": "618866f53c0947a1aae5d9711ff30651",
+                        "text": "Neue Make-up-Trends"
+                    },
+                    "relevance_score": -0.13570704,
+                    "usage": {
+                        "id": "1bbd8300ff5845679aa665943cc6a80a",
+                        "total_tokens": 6
+                    }
+                }
+            ],
+            "query_usage": {
+                "id": "944bf81de8244506aa236f0ae6befe60",
+                "total_tokens": 6
+            },
+            "docs_usage": {
+                "id": "b80f765bf90e48979d7ba5b6b2499ae0",
+                "total_tokens": 26
+            }
+        }
+    ]
+}
